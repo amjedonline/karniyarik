@@ -2,7 +2,7 @@
   "name": "locker",
   "version": "1.0.0",
   "description": "Rest API to manage articles in a locker.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/amjedonline/locker/issues"
   },
-  "homepage": "https://github.com/amjedonline/locker#readme"
+  "homepage": "https://github.com/amjedonline/locker#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
 }
