@@ -61,6 +61,7 @@ beersRoute.get(function(req, res){
 
 //get one
 var beerRoute = router.route('/beers/:beer_id');
+
 beerRoute.get(function(req, res) {
   Beer.findById(req.params.beer_id, function(err, beer){
     if (err)
@@ -82,6 +83,14 @@ beerRoute.put(function(req, res) {
         res.send(err)
       res.json(beer);
     });
+  });
+});
+
+beerRoute.delete(function(req, res) {
+  Beer.findByIdAndRemove(req.params.beer_id, function(err, beer){
+    if (err)
+      res.send(err)
+    res.json({ message: 'Beer removed from the locker!' });
   });
 });
 
