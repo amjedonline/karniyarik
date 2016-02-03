@@ -3,6 +3,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var beerController = require('./controllers/beer');
+var userController = require('./controllers/user');
 
 mongoose.connect('mongodb://localhost:27017/locker');
 // Create our Express application
@@ -32,6 +33,10 @@ router.route('/beers/:beer_id')
   .put(beerController.putBeer)
   .delete(beerController.deleteBeer);
 
+// User request handling
+router.route('/users')
+  .post(userController.postUsers)
+  .get(userController.getUsers)
 // Register all our routes with /api
 // http://localhost:3000/api
 app.use('/api', router);
