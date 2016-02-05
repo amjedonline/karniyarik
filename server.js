@@ -48,3 +48,5 @@ app.use('/api', router);
 
 // Start the server
 app.listen(port);
+
+module.exports = app;
