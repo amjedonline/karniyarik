@@ -2,7 +2,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var beerController = require('./controllers/beer');
+var driverController = require('./controllers/driver');
 var userController = require('./controllers/user');
 
 var passport = require('passport');
@@ -24,18 +24,20 @@ var port = process.env.PORT || 3000;
 // Create our Express router
 var router = express.Router();
 
-// Add /beers route request handling
-// 1. post one beer
-// 2. get all beers
-router.route('/beers')
-  .post(authController.isAuthenticated, beerController.postBeers)
-  .get(authController.isAuthenticated, beerController.getBeers);
+// User Authentication
+// User request handling
+router.route('/users/authenticate')
+  .post(authController.isAuthenticated, jwtController.createJwtToken);
+
+router.route('/drivers')
+  .post(authController.isBearerAuthenticated, driverController.postDrivers)
+  .get(authController.isBearerAuthenticated, driverController.getDrivers);
 
 // 1. get one
-router.route('/beers/:beer_id')
-  .get(authController.isAuthenticated, beerController.getBeer)
-  .put(authController.isAuthenticated, beerController.putBeer)
-  .delete(authController.isAuthenticated, beerController.deleteBeer);
+router.route('/drivers/:drivers_id')
+  .get(authController.isBearerAuthenticated, driverController.getDriver)
+  .put(authController.isBearerAuthenticated, driverController.putDriver)
+  .delete(authController.isBearerAuthenticated, driverController.deleteDriver);
 
 // User request handling
 router.route('/users')
