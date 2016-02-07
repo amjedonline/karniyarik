@@ -1,21 +1,21 @@
 {
-  "name": "locker",
+  "name": "karniyarik",
   "version": "1.0.0",
-  "description": "Rest API to manage articles in a locker.",
+  "description": "Rest API to Alotaksim business objects.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/amjedonline/locker.git"
+    "url": "git+https://github.com/amjedonline/karniyarik.git"
   },
   "author": "Mohammed Amjed",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/amjedonline/locker/issues"
+    "url": "https://github.com/amjedonline/karniyarik/issues"
   },
-  "homepage": "https://github.com/amjedonline/locker#readme",
+  "homepage": "https://github.com/amjedonline/karniyarik#readme",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.2",

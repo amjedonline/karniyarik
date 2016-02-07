@@ -92,6 +92,6 @@ exports.deleteDriver = function(req, res) {
     if (err)
       res.send(err)
     else
-      res.json({ message: 'Driver removed from the locker!' });
+      res.json({ message: 'Driver removed!' });
   });
 };
