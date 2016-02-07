@@ -3,8 +3,11 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../server.js');
 var should = chai.should();
+var assert = chai.assert;
 var util = require('util');
 var diff = require('deep-diff').diff;
+
+var _ = require('underscore');
 
 chai.use(chaiHttp);
 
@@ -40,7 +43,6 @@ describe('Drivers', function() {
       .auth(authUser, authPass)
       .send(testDriver)
       .then(function (res) {
-        console.log(util.inspect(res.body));
         testDriverId = res.body._id;
       });
 
@@ -64,9 +66,9 @@ describe('Drivers', function() {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.a('object');
-            res.body.userId
-            var differences = diff(testDriver, res.body);
-            console.log(util.inspect(differences));
+
+            var isMatch = _.isMatch(res.body, testDriver);
+            assert.isTrue(isMatch, "The created object has all the properties requested in post.");
             done();
         });
     });
