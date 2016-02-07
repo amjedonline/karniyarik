@@ -21,10 +21,16 @@
     "body-parser": "^1.14.2",
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
+    "deep-diff": "^0.3.3",
     "express": "^4.13.4",
+    "jsonwebtoken": "^5.5.4",
+    "moment": "^2.11.2",
     "mongoose": "^4.3.7",
+    "morgan": "^1.6.1",
     "nodemon": "^1.8.1",
     "passport": "^0.3.2",
-    "passport-http": "^0.3.0"
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "underscore": "^1.8.3"
   }
 }

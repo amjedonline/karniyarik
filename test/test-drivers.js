@@ -4,21 +4,21 @@ var chaiHttp = require('chai-http');
 var server = require('../server.js');
 var should = chai.should();
 var util = require('util');
+var diff = require('deep-diff').diff;
 
 chai.use(chaiHttp);
 
 var testDriver = {
-  userId: "userid-123",
   fname: "Max",
   lname: "Rosemann",
   email: "max.rosemann@gmail.com",
   gender: "Male",
-  dob: "06/02/1986",
+  dob: "1986-02-06T00:00:00.000Z",
   mobile: "1234567890",
   licensenumber: "license-123",
-  licenseexpirydate: "21/10/2017",
+  licenseexpirydate: "2019-02-07T00:00:00.000Z",
   insurancenumber: "insurance-123",
-  insuranceexpirydate: "21/11/2017",
+  insuranceexpirydate: "2017-01-20T00:00:00.000Z",
   country: "Turkey",
   state: "Ankara",
   city: "Ankara",
@@ -40,8 +40,8 @@ describe('Drivers', function() {
       .auth(authUser, authPass)
       .send(testDriver)
       .then(function (res) {
-          testDriverId = res.body._id;
-          console.log('Created test driver id: ' + testDriverId);
+        console.log(util.inspect(res.body));
+        testDriverId = res.body._id;
       });
 
     });
@@ -64,7 +64,9 @@ describe('Drivers', function() {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.a('object');
-            console.log(util.inspect(res.body));
+            res.body.userId
+            var differences = diff(testDriver, res.body);
+            console.log(util.inspect(differences));
             done();
         });
     });

@@ -2,9 +2,7 @@ var mongoose = require('mongoose')
 
 // Define new schema
 var DriverSchema = new mongoose.Schema({
-  userId:{
-    type: String,
-  },
+  userId: String,
   fname: {
     type: String,
     label: "First name",
@@ -65,7 +63,8 @@ var DriverSchema = new mongoose.Schema({
   postal: {
     type: String,
     maxLength: 20
-  }
+  },
+  timestamps: {}
 });
 
 
