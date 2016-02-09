@@ -31,7 +31,7 @@ app.use(morgan('combined'))
 
 // User Authentication
 // User request handling
-router.route('/users/authenticate')
+router.route('/authentication/jwt_token')
   .post(authController.isAuthenticated, jwtController.sendJWTInBody);
 
 router.route('/drivers')
