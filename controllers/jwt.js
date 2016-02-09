@@ -1,16 +1,23 @@
 
-var jwt = require('jsonwebtoken');
+var jsonwebtoken = require('jsonwebtoken');
+var util = require('util');
+var ms = require('ms');
 
-exports.createJwt = function(req, res) {
+var createJwtResponse = function(user) {
 
-  // testing
-  console.log(util.inspect(user));
-
-  var options = { algorithm: 'RS256' };
-  var payload = {username: req.user.username, iss: 'Alotaksim' };
+  var validityInMs = ms('7d')
+  var options = { notBefore: validityInMs, issuer: 'Alotaksim/Karniyarik', subject: user.username };
+  var payload = { username: user.username };
   var secret = 'alotaksim-secret';
-  var token = jwt.sign( payload, secret, options );
+  var token = jsonwebtoken.sign( payload, secret );
 
-  console.log('Step 1: '+token);
-  res.json(token);
+  var validTillDate = new Date().getTime() + validityInMs;
+
+  var tokenResponse = {token:token, token_type: 'JWT', valid_till: validTillDate};
+  return tokenResponse;
+};
+
+exports.sendJWTInBody = function(req, res) {
+  var tokenResponse = createJwtResponse(req.user);
+  res.json(tokenResponse);
 };

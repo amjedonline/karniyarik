@@ -27,6 +27,7 @@
     "moment": "^2.11.2",
     "mongoose": "^4.3.7",
     "morgan": "^1.6.1",
+    "ms": "^0.7.1",
     "nodemon": "^1.8.1",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
