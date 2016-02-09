@@ -9,7 +9,7 @@ var jwtController  = require('./controllers/jwt');
 var passport = require('passport');
 var authController = require('./controllers/auth');
 
-mongoose.connect('mongodb://localhost:27017/karniyarik');
+mongoose.connect('mongodb://localhost:27017/locker');
 // Create our Express application
 var app = express();
 
