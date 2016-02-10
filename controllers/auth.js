@@ -1,30 +1,23 @@
+
 var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
+var BearerStrategy = require('passport-http-bearer').Strategy;
 
 var User = require('../models/user');
 
-passport.use(new BasicStrategy(
-  function(username, password, callback) {
+passport.use(new BearerStrategy(
+  function(jwToken, done){
+    var secret = 'alotaksim-secret';
+    var decoded = jwt.verify(jwToken, secret);
 
-    User.findOne({username:username}, function (err, user){
+    console.log('decode:' + util.inspect(decoded));
 
-        if (err) { return callback(err); }
-
+    User.findOne({username:decoded.sub.username}, function (err, user){
+        if (err) { return done(err); }
         // No user found with that username
-        if(!user) { return callback(null, false); }
-
-        // Make sure the password is correct
-        user.verifyPassword(password, function (err, isMatch){
-          if (err) { return callback(err) };
-
-          //Password did not match
-          if (!isMatch) { return callback(null, false); }
-
-          //success
-          return callback(null, user);
-        });
+        if(!user) { return done(null, false); }
+        callback(null, user, {scope: '*'});
     });
-  }
-));
+  })
+);
 
-exports.isAuthenticated = passport.authenticate('basic', {session:false});
+exports.isAuthenticated = passport.authenticate('bearer', {session: false});

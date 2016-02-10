@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
+var util = require('util');
 
 var UserSchema = new mongoose.Schema({
   username:{
@@ -33,8 +34,10 @@ UserSchema.pre('save',
 
 UserSchema.methods.verifyPassword = function (password, cb) {
     bcrypt.compare(password, this.password, function(err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
+
+      if (err) return cb(err);
+      console.log(util.inspect(password));
+      cb(null, isMatch);
     });
 };
 

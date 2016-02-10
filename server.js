@@ -16,7 +16,7 @@ var app = express();
 //Use the body-parser package in our application
 app.use(bodyParser.json());
 
-//Use the passport package in out application
+//Use the passport package in our application
 app.use(passport.initialize());
 
 // Use environment defined port or 3000
@@ -27,12 +27,12 @@ var router = express.Router();
 
 // log using morgan
 var morgan = require('morgan')
-app.use(morgan('combined'))
+//app.use(morgan('combined'))
 
 // User Authentication
 // User request handling
 router.route('/authentication/jwt_token')
-  .post(authController.isAuthenticated, jwtController.sendJWTInBody);
+  .post(jwtController.createJwtToken);
 
 router.route('/drivers')
   .post(authController.isAuthenticated, driverController.postDrivers)

@@ -8,14 +8,13 @@ var assert = chai.assert;
 var _ = require('underscore');
 var util = require('util');
 
-
 chai.use(chaiHttp);
 
 describe('Basic Authentication for token generation', function() {
     it('should create a valid JWT token and send response', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .auth('amjed', 'amjed')
+        .send({username:'amjed', password:'amjed', registration_id:'id123id'})
         .end(function(err, res) {
             res.should.have.status(200);
             res.should.be.json;
