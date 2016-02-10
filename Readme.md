@@ -1,5 +1,5 @@
 # Karniyarik
-*REST API server for arbitrary business objects in a microservice system architecture.*
+*REST API server for managing arbitrary business objects in a microservice system architecture.*
 
 ## Getting started
 
