@@ -13,12 +13,11 @@ passport.use(new BearerStrategy(
     var decoded = jsonwebtoken.verify(jwToken, secret);
 
     // console.log('decode:' + util.inspect(decoded));
-
-    User.findOne({username:decoded.username}, function (err, user){
+    User.findOne({username:decoded.username}, function (err, user) {
         if (err) { return done(err); }
         // No user found with that username
         if(!user) { return done(null, false); }
-        callback(null, user, {scope: '*'});
+        done(null, user);
     });
   })
 );

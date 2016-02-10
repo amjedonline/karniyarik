@@ -43,6 +43,18 @@ describe('Basic Authentication for token generation', function() {
         });
     });
 
+    it('should unauthorize JWT Token creation', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username:'amjed', password:'falsepassword', registration_id:'id123id'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
     it('should authenticate the request with an earlier issued token.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
@@ -59,9 +71,8 @@ describe('Basic Authentication for token generation', function() {
                 res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('array');
-                done();
             });
-
+            assert('Issued jwtTokens and being authenticated.');
             done();
         });
     });

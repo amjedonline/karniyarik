@@ -33,24 +33,33 @@ var testDriver = {
 var testDriverId = "";
 var authUser = "amjed";
 var authPass = "amjed";
+var authHeader = '';
 
 describe('Drivers', function() {
 
-    before(function(){
-      // create test data before
+    before(function(done) {
       chai.request(server)
-      .post('/api/drivers')
-      .auth(authUser, authPass)
-      .send(testDriver)
-      .then(function (res) {
-        testDriverId = res.body._id;
+      .post('/api/authentication/jwt_token')
+      .send({username: authUser, password: authPass, registration_id: 'id123id'})
+      .end(function(err, res) {
+          res.should.have.status(200);
+          authHeader = {'Authorization': 'Bearer '+ res.body.token};
+          // create test data before
+          chai.request(server)
+          .post('/api/drivers')
+          .set(authHeader)
+          .send(testDriver)
+          .end(function (err, res) {
+            testDriverId = res.body._id;
+            done();
+          });
       });
-
     });
+
     it('should list All drivers on /api/drivers GET', function (done) {
         chai.request(server)
         .get('/api/drivers')
-        .auth(authUser, authPass)
+        .set(authHeader)
         .end(function(err, res) {
             res.should.have.status(200);
             res.should.be.json;
@@ -58,10 +67,11 @@ describe('Drivers', function() {
             done();
         });
     });
+
     it('should list a SINGLE driver on /api/drivers/<id> GET', function(done) {
         chai.request(server)
         .get('/api/drivers/'+testDriverId)
-        .auth(authUser, authPass)
+        .set(authHeader)
         .end(function (err, res) {
             res.should.have.status(200);
             res.should.be.json;

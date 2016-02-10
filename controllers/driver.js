@@ -2,6 +2,7 @@
 var Driver = require('../models/driver');
 var moment = require('moment');
 var _ = require('underscore');
+var util = require('util');
 
 //Create endpoint /api/drivers for POSTS
 exports.postDrivers = function(req, res){
@@ -44,21 +45,27 @@ exports.postDrivers = function(req, res){
 
   // Save the driver and check for errors
   driver.save(function(err){
-    if (err)
+    if (err){
+      // console.log('Sending error ' + err);
       res.send(err);
-    else
+    }
+    else{
+      // console.log('Sending driver ' + util.inspect(driver));
       res.json(driver);
+    }
   })
 };
 
 //get all
 exports.getDrivers = function(req, res) {
+  //console.log('user: ' + util.inspect(req.user));
   Driver.find({ userId: req.user._id },function(err, drivers){
     if(err){
       console.log(err);
       res.send(err);
     }
     else{
+      //console.log('Returning drivers;');
       res.json(drivers);
     }
   })
@@ -66,7 +73,6 @@ exports.getDrivers = function(req, res) {
 
 //get one
 exports.getDriver = function(req, res) {
-  console.log(req.params);
   Driver.findById({ userId: req.user._id, _id: req.params.driver_id }, function(err, driver){
     if(err){
       console.log(err);

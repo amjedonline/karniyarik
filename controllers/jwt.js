@@ -30,50 +30,54 @@ exports.createJwtToken = function(req, res) {
   User.findOne({username:username}, function (err, user) {
 
       if (err) {
-        return res.status(500).send({
+        res.status(500).send({
           'ERR_CODE':'UNKNOWN',
           message:'There was a problem retrieving the user information.'
         });
+        return;
       }
 
       // No user found with that username
       if (!user) {
-        return res.status(400).send({
+        res.status(400).send({
           'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
           message:'Usename and password does not match.'
         });
+        return;
       }
 
       // Make sure the password is correct
       user.verifyPassword(password, function (err, isMatch) {
         if (err) {
-          return res.status(400).send({
+          res.status(400).send({
             'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
             message:'Usename and password does not match.'
           });
+          return;
         };
 
         //Password did not match
         if (!isMatch) {
-          return res.status(400).send({
+          res.status(400).send({
             'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
             message:'Usename and password does not match.'
           });
+          return;
         }
 
       });
 
       if( !_.isString(registrationId)){
-        return res.status(400).send({
+        res.status(400).send({
           'ERR_CODE':'MISSING_REG_ID',
           message:'Expecting a Registration Id.'
         });
+        return;
       }
 
       //success
       var tokenResponse = createResponseObject(user, registrationId);
       res.json(tokenResponse);
-
   });
 
 };
