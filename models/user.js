@@ -36,7 +36,6 @@ UserSchema.methods.verifyPassword = function (password, cb) {
     bcrypt.compare(password, this.password, function(err, isMatch) {
 
       if (err) return cb(err);
-      console.log(util.inspect(password));
       cb(null, isMatch);
     });
 };

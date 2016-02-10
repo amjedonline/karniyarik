@@ -24,8 +24,7 @@ var createResponseObject = function(user, registrationId) {
 exports.createJwtToken = function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
-  console.log('Got username/password: ' + username + '/' + password);
-  
+
   var registrationId = req.body.registration_id;
 
   User.findOne({username:username}, function (err, user) {
@@ -39,7 +38,6 @@ exports.createJwtToken = function(req, res) {
 
       // No user found with that username
       if (!user) {
-        console.log('no user found.');
         return res.status(400).send({
           'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
           message:'Usename and password does not match.'
@@ -49,7 +47,6 @@ exports.createJwtToken = function(req, res) {
       // Make sure the password is correct
       user.verifyPassword(password, function (err, isMatch) {
         if (err) {
-          console.log('while verification.');
           return res.status(400).send({
             'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
             message:'Usename and password does not match.'
@@ -58,7 +55,6 @@ exports.createJwtToken = function(req, res) {
 
         //Password did not match
         if (!isMatch) {
-          console.log('Do not match.');
           return res.status(400).send({
             'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
             message:'Usename and password does not match.'
@@ -68,7 +64,6 @@ exports.createJwtToken = function(req, res) {
       });
 
       if( !_.isString(registrationId)){
-        console.log('registration id not string..');
         return res.status(400).send({
           'ERR_CODE':'MISSING_REG_ID',
           message:'Expecting a Registration Id.'

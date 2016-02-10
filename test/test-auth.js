@@ -21,7 +21,6 @@ describe('Basic Authentication for token generation', function() {
             res.body.should.be.a('object');
 
             var tokenResponse = res.body;
-            console.log(util.inspect(_.keys(tokenResponse)));
 
             var containsAllKeys = _.every(
                 ['token', 'token_type', 'valid_till'],
@@ -40,6 +39,29 @@ describe('Basic Authentication for token generation', function() {
 
             assert.isNotNull(tokenResponse.token, 'The JWT token is not empty');
             assert.isString(tokenResponse.token, 'The JWT token is a string.');
+            done();
+        });
+    });
+
+    it('should authenticate the request with an earlier issued token.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username: 'amjed', password: 'amjed', registration_id: 'id123id'})
+        .end(function(err, res) {
+            res.should.have.status(200);
+            var token = res.body.token;
+
+            var bearer = {'Authorization': 'Bearer ' + token};
+            chai.request(server)
+            .get('/api/drivers')
+            .set(bearer)
+            .end(function(err, res) {
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('array');
+                done();
+            });
+
             done();
         });
     });
