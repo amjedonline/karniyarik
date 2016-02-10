@@ -7,7 +7,7 @@
 2. Install mongodb from [here](https://docs.mongodb.org/manual/installation/)
 3. Start mongodb daemon in a shell window using the below command
 ```
-$ mongo-installtion/307/bin$./mongod --dbpath path-to-mongodata/data_dir
+mongo-installation/bin$ ./mongod --dbpath path-to-mongodata/data_dir
 ```
 4. Start the node server with from the main project directory
 ```
