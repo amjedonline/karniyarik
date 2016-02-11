@@ -17,3 +17,5 @@ $ node server.js
 ```
 $ mocha
 ```
+
+The server should be now ready to be accessed at http://localhost:3000
