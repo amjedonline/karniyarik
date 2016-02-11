@@ -13,9 +13,24 @@ mongo-installation/bin$ ./mongod --dbpath path-to-mongodata/data_dir
 ```
 $ node server.js
 ```
-5. To run the test cases, simply execute the below command from the main project directory
+The server should be now ready to be accessed at http://localhost:3000/api
+
+## Running integration test
+The test cases cover the contract of the rest interfaces.
+Chai, chai-assert, chai-datetime and chai-http is used  primarily along with mocha as testing framework.
+
+To run the test cases, simply execute the below command from the main project directory
 ```
 $ mocha
 ```
 
-The server should be now ready to be accessed at http://localhost:3000
+## Trying ready to use HTTP requests.
+The file _postman-collection.js_ contains the latest collection of HTTP Requests that can be replayed with _Postman_.
+Install Postman for Mac OS or a Google chrome plugin from [here](https://www.getpostman.com)
+
+
+## Available Business Objects
+1. User
+2. Driver
+
+_For more information on provided Rest APIs please check the postman collection and chai test cases under /test directory._
