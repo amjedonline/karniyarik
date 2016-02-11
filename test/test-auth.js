@@ -43,10 +43,58 @@ describe('Basic Authentication for token generation', function() {
         });
     });
 
-    it('should unauthorize JWT Token creation', function (done) {
+    it('should return 400 on an attempt to create JWT token with false password.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({username:'amjed', password:'falsepassword', registration_id:'id123id'})
+        .send({username:'amjed', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+    it('should return 400 on an attempt to create JWT token with false username.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username:'nonexistentuser', password:'amjed', registration_id:'somerandomnumber8972134'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+    it('should return 400 on an attempt to create JWT token with false username and false password.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username:'somenotexistinguser', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+    it('should return 400 on an unauthorized JWT token creation attempt', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username:'amjed', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+    it('should return 400 on an attempt to create JWT token without a registraion id.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username:'somenotexistinguser', password:'falsepassword'})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;

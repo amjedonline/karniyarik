@@ -5,7 +5,9 @@ var ms = require('ms');
 var _ = require('underscore');
 var User = require('../models/user');
 
+var async = require('async');
 
+// TODO: Need to catch possible exceptions here
 var createResponseObject = function(user, registrationId) {
 
   var validityInMs = ms('7d')
@@ -28,7 +30,6 @@ exports.createJwtToken = function(req, res) {
   var registrationId = req.body.registration_id;
 
   User.findOne({username:username}, function (err, user) {
-
       if (err) {
         res.status(500).send({
           'ERR_CODE':'UNKNOWN',
@@ -38,46 +39,55 @@ exports.createJwtToken = function(req, res) {
       }
 
       // No user found with that username
-      if (!user) {
-        res.status(400).send({
-          'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
-          message:'Usename and password does not match.'
+      var userCheck = function(callback){
+        if (!user)
+          callback({
+            'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
+            message:'Usename and password does not match.'
+          });
+         else
+          callback(null);
+      };
+
+      var verifyPass = function(callback) {
+        user.verifyPassword(password, function (err, isMatch) {
+          if(err || !isMatch) {
+            callback({
+              'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
+              message:'Usename and password does not match.'
+            });
+          } else {
+            callback(null);
+          }
         });
-        return;
-      }
+      };
 
-      // Make sure the password is correct
-      user.verifyPassword(password, function (err, isMatch) {
-        if (err) {
-          res.status(400).send({
-            'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
-            message:'Usename and password does not match.'
+      var checkRegistrationId = function (callback){
+        if( !_.isString(registrationId)){
+          callback({
+            'ERR_CODE':'MISSING_REG_ID',
+            message:'Expecting a Registration Id.'
           });
-          return;
-        };
+        } else {
+          callback(null);
+        }
+      };
 
-        //Password did not match
-        if (!isMatch) {
-          res.status(400).send({
-            'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
-            message:'Usename and password does not match.'
-          });
+      var seriesCallback = function(err){
+        if(err){
+          res.status(400).send(err);
           return;
         }
-
-      });
-
-      if( !_.isString(registrationId)){
-        res.status(400).send({
-          'ERR_CODE':'MISSING_REG_ID',
-          message:'Expecting a Registration Id.'
-        });
-        return;
       }
 
       //success
-      var tokenResponse = createResponseObject(user, registrationId);
-      res.json(tokenResponse);
-  });
+      var success = function (callback) {
+        var tokenResponse = createResponseObject(user, registrationId);
+        res.json(tokenResponse);
+        callback(null);
+      };
 
+      async.series( [ userCheck, verifyPass, checkRegistrationId, success ], seriesCallback);
+
+  });
 };
