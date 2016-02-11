@@ -13,7 +13,7 @@ var createResponseObject = function(user, registrationId) {
   var validityInMs = ms('7d')
   var options = { notBefore: validityInMs, issuer: 'Alotaksim/Karniyarik', subject: user.username };
 
-  var payload = { username: user.username, gcm_registraion_id: registrationId };
+  var payload = { username: user.username, registration_id: registrationId };
   var secret = 'alotaksim-secret';
   var token = jsonwebtoken.sign( payload, secret );
 

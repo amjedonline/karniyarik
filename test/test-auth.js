@@ -94,7 +94,7 @@ describe('Basic Authentication for token generation', function() {
     it('should return 400 on an attempt to create JWT token without a registraion id.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({username:'somenotexistinguser', password:'falsepassword'})
+        .send({username:'somenotexistinguser', password:'falsepassword', registration_id:'somerandomnumber8972134'})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -115,6 +115,7 @@ describe('Basic Authentication for token generation', function() {
             chai.request(server)
             .get('/api/drivers')
             .set(bearer)
+            .set({'RegistrationId': 'id123id'})
             .end(function(err, res) {
                 res.should.have.status(200);
                 res.should.be.json;
