@@ -33,6 +33,14 @@ $ mocha
 The file _postman-collection.js_ contains the latest collection of HTTP Requests that can be replayed with _Postman_.
 Install Postman for Mac OS or a Google chrome plugin from [here](https://www.getpostman.com)
 
+1. Create a new user with the following Request:
+POST /api/users
+Body
+```
+{ "username": "mustermann", "password": "secret", "registration_id": "myregistrationgid123"}
+```
+2. Note the response object and copy the token for future request.
+3. Update the other requests RegistrationId header with the newly generated token
 
 ## Available Business Objects
 1. User
