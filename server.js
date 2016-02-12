@@ -9,7 +9,7 @@ var jwtController  = require('./controllers/jwt');
 var passport = require('passport');
 var authController = require('./controllers/auth');
 
-mongoose.connect('mongodb://localhost:27017/locker');
+mongoose.connect('mongodb://localhost:27017/karniyarik');
 // Create our Express application
 var app = express();
 
@@ -46,7 +46,7 @@ router.route('/drivers/:driver_id')
 
 // User request handling
 router.route('/users')
-  .post(authController.isAuthenticated, userController.postUsers)
+  .post(userController.postUsers)
   .get(authController.isAuthenticated, userController.getUsers);
 
 // Register all our routes with /api
