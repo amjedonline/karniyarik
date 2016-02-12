@@ -19,7 +19,12 @@ The server should be now ready to be accessed at http://localhost:3000/api
 The test cases cover the contract of the rest interfaces.
 Chai, chai-assert, chai-datetime and chai-http is used  primarily along with mocha as testing framework.
 
-To run the test cases, simply execute the below command from the main project directory
+1. Install mocha using npm
+```
+$ npm install -g mocha
+```
+
+2. Execute the below command from the main project directory
 ```
 $ mocha
 ```
