@@ -84,13 +84,20 @@ exports.getDriver = function(req, res) {
 };
 
 exports.putDriver = function(req, res) {
-  Driver.update({userId: req.user._id, _id: req.params.driver_id}, { quantity: req.body.quantity },
+  var allowedFields = ["fname", "lname", "email", "gender", "dob", "mobile", "licensenumber",
+        "licenseexpirydate", "insurancenumber", "insuranceexpirydate", "country", "state", "city",
+         "addressline1", "addressline2", "postal"];
+  var fieldsToUpdate = _.intersection(Object.keys(req.body), allowedFields);
+  var reducer = function(map, el){ map[el] = req.body[el]; return map; }
+  var keyValuesToUpdate = _.reduce(fieldsToUpdate, reducer, {});
+
+  Driver.update({userId: req.user._id, _id: req.params.driver_id}, keyValuesToUpdate,
       function(err, num, raw) {
         if (err)
           res.send(err)
         else
           res.json({message: 'Updated the driver.'});
-    });
+  });
 };
 
 exports.deleteDriver = function(req, res) {
