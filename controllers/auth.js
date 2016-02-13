@@ -21,16 +21,18 @@ passport.use(new BearerStrategy(
         // No user found with that username
         if(!user) { return done(null, false); }
 
-        // TODO: Check the registrationId from the header with the registration id from the token.
-        // console.log('Here..'+ util.inspect(req));
+        //TODO: RegistrationId in header is defined
         var registrationIdInHeader = req.get('RegistrationId');
-        // console.log('decode:' + util.inspect(decodedToken));
-        // console.log(decodedToken.registration_id);
+        if(!registrationIdInHeader){
+          return done('Registration id not given.', false);
+        }
+
+        // console.log(util.inspect(decodedToken));
         var registrationIdsMatch = (registrationIdInHeader===decodedToken.registration_id);
-        console.log('Registration id match: '+registrationIdsMatch);
-        if(!registrationIdsMatch ){
+        console.log('Registration id match: ' + registrationIdsMatch);
+        if(!registrationIdsMatch){
           console.log('Did not match and return =ing false/');
-          return done(null, false);
+          return done('Registration Id does not match.', false);
         }
         done(null, user);
     });
