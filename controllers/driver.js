@@ -47,11 +47,11 @@ exports.postDrivers = function(req, res){
   driver.save(function(err){
     if (err){
       // console.log('Sending error ' + err);
-      res.send(err);
+      res.status(500).send("There was a problem trying to save the Driver object.");
     }
     else{
       // console.log('Sending driver ' + util.inspect(driver));
-      res.json(driver);
+      res.status(200).json(driver);
     }
   })
 };
@@ -61,24 +61,23 @@ exports.getDrivers = function(req, res) {
   //console.log('user: ' + util.inspect(req.user));
   Driver.find({ userId: req.user._id },function(err, drivers){
     if(err){
-      console.log(err);
-      res.send(err);
+      res.status(500).send("There was a problem accessing drivers.");
     }
     else{
-      //console.log('Returning drivers;');
-      res.json(drivers);
+      res.status(200).json(drivers);
     }
   })
 };
 
 //get one
 exports.getDriver = function(req, res) {
-  Driver.findById({ userId: req.user._id, _id: req.params.driver_id }, function(err, driver){
+  Driver.findOne({ userId: req.user._id, _id: req.params.driver_id }, function(err, driver){
     if(err){
-      console.log(err);
-      res.send(err)
-    }else{
-      res.json(driver);
+      res.status(500).send({message: 'There was a problem accessing the driver.'});
+    } else if (!driver) {
+      res.status(404).send({message:'Either a driver with this id does not exist, or you dont have access rights to this driver.'});
+    } else {
+      res.status(200).json(driver);
     }
   });
 };
@@ -91,20 +90,28 @@ exports.putDriver = function(req, res) {
   var reducer = function(map, el){ map[el] = req.body[el]; return map; }
   var keyValuesToUpdate = _.reduce(fieldsToUpdate, reducer, {});
 
-  Driver.update({userId: req.user._id, _id: req.params.driver_id}, keyValuesToUpdate,
-      function(err, num, raw) {
-        if (err)
-          res.send(err)
-        else
-          res.json({message: 'Updated the driver.'});
+  Driver.findOne({ userId: req.user._id, _id: req.params.driver_id }, function(err, driver){
+    if(err){
+      res.status(500).send({message: 'There was a problem accessing the driver.'});
+    } else if (!driver) {
+      res.status(404).send({message:'Either a driver with this id does not exist, or you dont have access rights to this driver.'});
+    } else {
+        Driver.update({userId: req.user._id, _id: req.params.driver_id}, keyValuesToUpdate ,
+        function(err, raw) {
+          if (err)
+            res.status(500).send({message: 'Requested driver was either not found or cannot be updated.'});
+          else
+            res.status(200).json({message: 'Driver updated.'});
+        });
+      }
   });
 };
 
 exports.deleteDriver = function(req, res) {
   Driver.findByIdAndRemove(req.params.driver_id, function(err, driver){
     if (err)
-      res.send(err)
+      res.status(500).send({message: 'For the given driverId and userId, no driver was found.'});
     else
-      res.json({ message: 'Driver removed!' });
+      res.status(200).json({ message: 'Driver removed!' });
   });
 };

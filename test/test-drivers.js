@@ -47,7 +47,6 @@ describe('Drivers', function() {
           res.should.have.status(200);
           authHeader = { 'Authorization': 'Bearer '+ res.body.token };
           registrationHeader = { 'RegistrationId': registrationId };
-          console.log('Setting registration header: ' + util.inspect(registrationHeader))
           // create test data before
           chai.request(server)
           .post('/api/drivers')
@@ -90,7 +89,61 @@ describe('Drivers', function() {
         });
     });
 
-    it('should add a SINGLE user on /api/drivers/ POST');
-    it('should update a SINGLE user on /api/drivers/<id> PUT');
-    it('should delete a SINGLE user on /api/drivers/<id> DELETE');
+    it('should update a SINGLE driver on /api/drivers/<id> PUT', function (done){
+      var newValue = {
+        fname: "Mathias",
+        lname: "Klatsch",
+        email: "mathias.klatsch@gmail.com",
+        gender: "Male",
+        dob: "1987-06-07T00:00:00.000Z",
+        mobile: "23142",
+        licensenumber: "license-xyz",
+        licenseexpirydate: "2020-02-07T00:00:00.000Z",
+        insurancenumber: "insurance-987",
+        insuranceexpirydate: "2018-01-20T00:00:00.000Z",
+        country: "Germany",
+        state: "Nordrhein Westfallen",
+        city: "Duesseldorf",
+        addressline1: "Housenummer 42",
+        addressline2: "Tamaradanz Strasse",
+        postal: "10178"
+      }
+      chai.request(server)
+      .put('/api/drivers/' + testDriverId)
+      .set(authHeader)
+      .set(registrationHeader)
+      .send(newValue)
+      .end(function(err, res) {
+          res.should.have.status(200);
+          chai.request(server)
+          .get('/api/drivers/' + testDriverId)
+          .set(authHeader)
+          .set(registrationHeader)
+          .end(function (err, res) {
+            res.should.have.status(200);
+            assert.isTrue(_.isMatch(res.body, newValue));
+            assert.ok('Put on /drivers/driverId updates the Driver.');
+          });
+          done();
+      });
+
+    });
+    it('should delete a SINGLE driver on /api/drivers/<id> DELETE', function (done){
+      chai.request(server)
+      .delete('/api/drivers/' + testDriverId)
+      .set(authHeader)
+      .set(registrationHeader)
+      .end(function (err, res) {
+        res.should.have.status(200);
+        chai.request(server)
+        .get('/api/drivers/' + testDriverId)
+        .set(authHeader)
+        .set(registrationHeader)
+        .end(function (err, res) {
+          res.should.have.status(404);
+          assert.ok('Delete on /drivers/driverId deletes the Driver.');
+        });
+      });
+      done();
+    });
 });
