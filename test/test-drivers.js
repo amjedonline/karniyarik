@@ -146,4 +146,15 @@ describe('Drivers', function() {
       });
       done();
     });
+
+    it('should return 404 on an attempt to delete a NON-EXISTING driver on /api/drivers/<id> DELETE', function (done){
+      chai.request(server)
+      .delete('/api/drivers/' + 'random91928374')
+      .set(authHeader)
+      .set(registrationHeader)
+      .end(function (err, res) {
+        res.should.have.status(404);
+      });
+      done();
+    });
 });
