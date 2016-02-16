@@ -100,7 +100,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /drivers:
+  /drivers/:
     get:
       summary: Get all driver profiles
       description: The Driver endpoint deals with the Driver profile objects.
@@ -115,12 +115,12 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-    pos:
+    post:
       summary: create a driver profile
       description: create a new driver profile.
-    tags:
+      tags:
         - Drivers
-        parameters:
+      parameters:
         - name: fname
           in: body
           description: Drivers first name
@@ -164,6 +164,18 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 definitions:
+  TokenResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        description: Access token to be used for authentication in subsequent requests.
+      token_type:
+        type: string
+        description: Type of token, ATM it is jwt
+      valid_till:
+        type: string
+        description: Token expiry date.
   Driver:
     type: object
     properties:
@@ -177,7 +189,7 @@ definitions:
         type: string
         description: Last name.
       dob:
-        type: date
+        type: string
         description: Date of birth.
   User:
     type: object
