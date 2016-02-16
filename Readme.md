@@ -26,7 +26,7 @@ $ npm install -g mocha
 
 2. Execute the below command from the main project directory
 ```
-$ mocha
+$ ./test.sh
 ```
 
 ## Trying ready to use HTTP requests.
