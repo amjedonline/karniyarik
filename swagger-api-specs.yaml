@@ -146,7 +146,7 @@ paths:
   /drivers/driver_id:
     get:
       summary: A single Driver profile
-      description: A specific driver's profile.
+      description: A specific drivers profile.
       parameters:
         - name: driver_id
           in: path
