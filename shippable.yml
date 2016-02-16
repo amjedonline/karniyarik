@@ -1,0 +1,6 @@
+# language setting
+language: node_js
+
+# version numbers
+node_js:
+  - "5.0.0"
