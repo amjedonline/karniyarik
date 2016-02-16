@@ -149,7 +149,7 @@ describe('Drivers', function() {
 
     it('should return 404 on an attempt to delete a NON-EXISTING driver on /api/drivers/<id> DELETE', function (done){
       chai.request(server)
-      .delete('/api/drivers/' + 'random91928374')
+      .delete('/api/drivers/' + '56bfbacc0ce9661d09fe9b4a')
       .set(authHeader)
       .set(registrationHeader)
       .end(function (err, res) {

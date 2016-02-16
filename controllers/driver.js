@@ -109,11 +109,13 @@ exports.putDriver = function(req, res) {
 
 exports.deleteDriver = function(req, res) {
   Driver.findByIdAndRemove(req.params.driver_id, function(err, driver){
-    if (err)
+    if (err){
+      console.log(util.inspect(err));
       res.status(500).send({message: 'There was a problem deleting the driver.'});
-    else if (!driver)
+    } else if (!driver) {
       res.status(404).send({message: 'Either a driver cannot be found or you dont have access rights to this driver.'});
-    else
+    } else {
       res.status(200).json({ message: 'Driver removed!' });
+    }
   });
 };
