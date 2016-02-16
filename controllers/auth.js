@@ -21,12 +21,14 @@ passport.use(new BearerStrategy({ passReqToCallback: true },
         // RegistrationId in header is defined
         var registrationIdInHeader = req.get('RegistrationId');
         if(!registrationIdInHeader){
-          return done('Registration id not given.', false);
+          // Registration id not given
+          return done(null, false);
         }
 
         var registrationIdsMatch = (registrationIdInHeader===decodedToken.registration_id);
         if(!registrationIdsMatch){
-          return done('Registration Id does not match.', false);
+          // Registration Id does not match
+          return done(null, false);
         }
         done(null, user);
     });

@@ -8,13 +8,28 @@ var assert = chai.assert;
 var _ = require('underscore');
 var util = require('util');
 
+var testUser = 'amjed';
+var testPassword = 'amjed123';
+var testRegistrationId = 'id123id';
+
 chai.use(chaiHttp);
 
-describe('Basic Authentication for token generation', function() {
-    it('should create a valid JWT token and send response', function (done) {
+describe('Basic Authentication for token generation.', function() {
+    before(function (done){
+      chai.request(server)
+      .post('/api/users')
+      .send({username: testUser, password: testPassword})
+      .end(function(err, res) {
+          res.should.have.status(200);
+          res.body.should.be.a('object')
+          done();
+      });
+
+    });
+    it('should create a valid JWT token and send response.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({username:'amjed', password:'amjed', registration_id:'id123id'})
+        .send({username:testUser, password:testPassword, registration_id:testRegistrationId})
         .end(function(err, res) {
             res.should.have.status(200);
             res.should.be.json;
@@ -46,7 +61,7 @@ describe('Basic Authentication for token generation', function() {
     it('should return 400 on an attempt to create JWT token with false password.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({username:'amjed', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .send({username:testUser, password:'falsepassword', registration_id:testRegistrationId})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -58,7 +73,7 @@ describe('Basic Authentication for token generation', function() {
     it('should return 400 on an attempt to create JWT token with false username.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({username:'nonexistentuser', password:'amjed', registration_id:'somerandomnumber8972134'})
+        .send({username:'nonexistentuser', password:testPassword, registration_id:'somerandomnumber8972134'})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -79,7 +94,7 @@ describe('Basic Authentication for token generation', function() {
         });
     });
 
-    it('should return 400 on an unauthorized JWT token creation attempt', function (done) {
+    it('should return 400 on an unauthorized JWT token creation attempt.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
         .send({username:'amjed', password:'falsepassword', registration_id:'somerandomnumber8972134'})
@@ -106,7 +121,7 @@ describe('Basic Authentication for token generation', function() {
     it('should authenticate the request with an earlier issued token.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({username: 'amjed', password: 'amjed', registration_id: 'id123id'})
+        .send({username: testUser, password: testPassword, registration_id: testRegistrationId})
         .end(function(err, res) {
             res.should.have.status(200);
             var token = res.body.token;
@@ -122,6 +137,55 @@ describe('Basic Authentication for token generation', function() {
                 res.body.should.be.a('array');
             });
             assert('Issued jwtTokens and being authenticated.');
+            done();
+        });
+    });
+
+    it('should not authenticate an earlier issued token with non-matching registrationid.', function (done) {
+
+        var actualRegId = 'my-new-reg-for-new-device';
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username: testUser, password: testPassword, registration_id: actualRegId })
+        .end(function(err, res) {
+            res.should.have.status(200);
+            var token = res.body.token;
+
+            var bearer = {'Authorization': 'Bearer ' + token};
+            chai.request(server)
+            .get('/api/drivers')
+            .set(bearer)
+            .set({'RegistrationId': 'some-random-registration-id'})
+            .end(function(err, res) {
+                res.should.have.status(401);
+                // res.should.be.json;
+                // res.body.should.be.a('object');
+            });
+            done();
+        });
+    });
+
+    it('should not authenticate an earlier issued token with an empty registrationid.', function (done) {
+
+        var localRegId = 'my-new-reg-for-device-2';
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username: testUser, password: testPassword, registration_id: localRegId })
+        .end(function(err, res) {
+            res.should.have.status(200);
+            var token = res.body.token;
+
+            var bearer = {'Authorization': 'Bearer ' + token};
+            chai.request(server)
+            .get('/api/drivers')
+            .set(bearer)
+            .set({'RegistrationId': ''})
+            .end(function(err, res) {
+              // Bearer strategy throws always a 401 ?
+                res.should.have.status(401);
+                // res.should.be.json;
+                // res.body.should.be.a('object');
+            });
             done();
         });
     });

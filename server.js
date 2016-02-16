@@ -5,13 +5,30 @@ var bodyParser = require('body-parser');
 var driverController = require('./controllers/driver');
 var userController = require('./controllers/user');
 var jwtController  = require('./controllers/jwt');
+var util = require('util');
 
 var passport = require('passport');
 var authController = require('./controllers/auth');
 
-mongoose.connect('mongodb://localhost:27017/karniyarik');
+
 // Create our Express application
 var app = express();
+
+var env  = app.get('env');
+console.log(env);
+var config = require('./config').config[env];
+
+mongoose.connect('mongodb://localhost:27017/' + config.db.name);
+// mongoose.set('debug', true);
+
+if(config.db.name==='development'){
+  mongoose.set('debug', function (coll, method, query, doc, options) {
+   //do your thing
+   console.log('Querying: ' + query);
+   console.log('Options: ' + options);
+   console.log('Result: ' + util.inspect(doc));
+  });
+}
 
 //Use the body-parser package in our application
 app.use(bodyParser.json());

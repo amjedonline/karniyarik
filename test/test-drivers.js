@@ -7,6 +7,8 @@ var assert = chai.assert;
 var util = require('util');
 var diff = require('deep-diff').diff;
 
+var async = require('async');
+
 var _ = require('underscore');
 
 chai.use(chaiHttp);
@@ -31,32 +33,59 @@ var testDriver = {
 }
 
 var testDriverId = "";
-var authUser = "amjed";
-var authPass = "amjed";
-var registrationId = 'id123id';
+var authUser = "driverTestingUser";
+var authPass = "driverTestingUserPassword";
+var registrationId = 'driverTestingUserRegistration1';
 var authHeader = '';
 var registrationHeader = '';
 
 describe('Drivers', function() {
 
     before(function(done) {
-      chai.request(server)
-      .post('/api/authentication/jwt_token')
-      .send({username: authUser, password: authPass, registration_id: registrationId})
-      .end(function(err, res) {
-          res.should.have.status(200);
-          authHeader = { 'Authorization': 'Bearer '+ res.body.token };
-          registrationHeader = { 'RegistrationId': registrationId };
-          // create test data before
-          chai.request(server)
-          .post('/api/drivers')
-          .set(authHeader)
-          .set(registrationHeader)
-          .send(testDriver)
-          .end(function (err, res) {
-            testDriverId = res.body._id;
+
+      var createTestUser = function(callback) {
+        chai.request(server)
+          .post('/api/users')
+          .send({username: authUser, password: authPass})
+          .end(function(err, res) {
+              res.should.have.status(200);
+              res.body.should.be.a('object')
+              assert.ok('Created test user.')
+              callback();
           });
-          done();
+      };
+
+      var createAccessToken = function (callback) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({username: authUser, password: authPass, registration_id: registrationId})
+        .end(function(err, res) {
+            res.should.have.status(200);
+            authHeader = { 'Authorization': 'Bearer '+ res.body.token };
+            registrationHeader = { 'RegistrationId': registrationId };
+            assert.ok('Created authentication token.')
+            callback();
+        });
+      };
+
+      var createTestDriver = function(callback) {
+        // create test data before
+        chai.request(server)
+        .post('/api/drivers')
+        .set(authHeader)
+        .set(registrationHeader)
+        .send(testDriver)
+        .end(function (err, res) {
+          testDriverId = res.body._id;
+          assert.ok('Created authentication token.')
+          callback();
+        });
+      };
+
+      async.series( [ createTestUser, createAccessToken, createTestDriver ], function(err) {
+        if (err)
+          assert.fail('Failed to create Test fixtures for Drivers test suite.');
+        done();
       });
     });
 
