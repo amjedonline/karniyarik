@@ -1,0 +1,203 @@
+# Karniyarik API -  Manage Alotaksim business objects.
+swagger: '2.0'
+info:
+  title: Karniyarik
+  description: Rest API access to Alotaksim
+  version: "0.0.2"
+# the domain of the service
+host: karniyarik.altotaksim.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /api
+produces:
+  - application/json
+paths:
+  /authentication/jwt_token:
+    post:
+      summary: Authentication and token creation
+      description: |
+        The authentication endpoint accepts username and password for authentication and in turn creates an access token for to facilitate  identity for eventual resource access.
+      parameters:
+        - name: username
+          in: body
+          description: Username of the registered user.
+          required: true
+          type: string
+        - name: password
+          in: body
+          description: password for the registered username.
+          required: true
+          type: string
+        - name: registration_id
+          in: body
+          description: Registration id for google notification service.
+          required: true
+          type: string
+      tags:
+        - Login
+      responses:
+        200:
+          description: Response object containing access token.
+          schema:
+            type: object
+            format: json
+            items:
+              $ref: '#/definitions/TokenResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/price:
+    get:
+      summary: Get user object
+      description: |
+        Returns a simple user object.
+      parameters:
+        - name: userId
+          in: path
+          description: Alotaksim userid
+          required: true
+          type: string
+      tags:
+        - User
+      responses:
+        200:
+          description: A json User object
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create user
+      description: Create a new user in the system.
+      parameters:
+        - name: username
+          in: body
+          description: unique username.
+          required: true
+          type: string
+        - name: password
+          in: body
+          description: password for the new user.
+          required: true
+          type: string
+      tags:
+        - User
+      responses:
+        200:
+          description: Newly created User object in Json format
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /drivers:
+    get:
+      summary: Get all driver profiles
+      description: The Driver endpoint deals with the Driver profile objects.
+      tags:
+        - Drivers
+      responses:
+        200:
+          description: An array of all driver profile in Json format.
+          schema:
+            $ref: '#/definitions/Driver'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    pos:
+      summary: create a driver profile
+      description: create a new driver profile.
+    tags:
+        - Drivers
+        parameters:
+        - name: fname
+          in: body
+          description: Drivers first name
+          required: true
+          type: string
+        - name: lname
+          in: body
+          description: Last name.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Profile information of the newly created driver in Json format.
+      responses:
+        200:
+          description: Profile information for a driver.
+          schema:
+            $ref: '#/definitions/Driver'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /drivers/driver_id:
+    get:
+      summary: A single Driver profile
+      description: A specific driver's profile.
+      parameters:
+        - name: driver_id
+          in: path
+          type: string
+          description: unique id of the driver in the system.
+      tags:
+        - Driver
+      responses:
+        200:
+          description: Driver object in Json format.
+          schema:
+            $ref: '#/definitions/Driver'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Driver:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: Unique identifier representing a specific driver.
+      fname:
+        type: string
+        description: First name
+      lname:
+        type: string
+        description: Last name.
+      dob:
+        type: date
+        description: Date of birth.
+  User:
+    type: object
+    properties:
+      user_id:
+        type: string
+        description: Unique identifier representing a specific user
+      username:
+        type: string
+        description: Unique string identifying the user in the sytem"
+      password:
+        type: string
+        description: password.
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
