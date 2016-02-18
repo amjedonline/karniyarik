@@ -190,6 +190,22 @@ describe('Passengers', function() {
       });
     });
 
+    it('should return 404 an attempt to PUT/Updated a NON-EXISTING passenger on /api/passengers/<id> PUT', function (done){
+      var newValue = {
+        fname: "Dr",
+        lname: "Evil",
+        email: "black.hat@anonymous.de",
+      }
+      chai.request(server)
+      .put('/api/passengers/' + '35acbadd0ce9321d51ba7e9c')
+      .set(authHeader)
+      .set(registrationHeader)
+      .send(newValue)
+      .end(function(err, res) {
+          res.should.have.status(404);
+          done();
+      });
+    });
 
     it('should delete a SINGLE passenger on /api/passengers/<id> DELETE', function (done){
       chai.request(server)
