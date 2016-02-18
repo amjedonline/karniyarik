@@ -117,6 +117,28 @@ describe('Passengers', function() {
         });
     });
 
+    it('should return 400 on unauthorized attempt to get a passenger on /api/passengers/<id> GET', function(done) {
+        chai.request(server)
+        .get('/api/passengers/'+testPassengerId)
+        .set(registrationHeader)
+        .end(function (err, res) {
+            res.should.have.status(401);
+            done();
+        });
+    });
+
+    it('should return 404 on attempt to get a NON-EXISTING passenger on /api/passengers/<id> GET', function(done) {
+        chai.request(server)
+        .get('/api/passengers/'+'35acbadd0ce9321d51ba7e9c')
+        .set(authHeader)
+        .set(registrationHeader)
+        .end(function (err, res) {
+            res.should.have.status(404);
+            done();
+        });
+    });
+
+
     it('should update a SINGLE passenger on /api/passengers/<id> PUT', function (done){
       var newValue = {
         fname: "Til",
