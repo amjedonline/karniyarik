@@ -15,10 +15,14 @@ var authController = require('./controllers/auth');
 var app = express();
 
 var env  = app.get('env');
-console.log(env);
+console.log(' !!!! Karniyarik server running in profile <' + env + '> !!!!!');
 var config = require('./config').config[env];
 
-mongoose.connect('mongodb://localhost:27017/' + config.db.name);
+function getDbConnectionString(config) {
+    return 'mongodb://' + config.db.host + ':' + config.db.port + '/' + config.db.name;
+}
+
+mongoose.connect(getDbConnectionString(config));
 // mongoose.set('debug', true);
 
 if(config.db.name==='development'){
