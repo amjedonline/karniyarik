@@ -29,7 +29,7 @@ var testPassenger = {
 }
 
 var testPassengerId = "";
-var authUser = "passengerTestingUser1";
+var authUser = "passengerTestingUser1@alotaksim.tr";
 var authPass = "passengerTestingPassword1";
 var registrationId = 'passengerTestingUserRegistration1';
 var authHeader = '';

@@ -33,7 +33,7 @@ var testDriver = {
 }
 
 var testDriverId = "";
-var authUser = "driverTestingUser";
+var authUser = "driverTestingUser@google.de";
 var authPass = "driverTestingUserPassword";
 var registrationId = 'driverTestingUserRegistration1';
 var authHeader = '';

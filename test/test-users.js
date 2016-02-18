@@ -9,7 +9,7 @@ var async = require('async');
 var authHeader = '';
 var registrationHeader = '';
 
-var authUser = 'userForUsersSuite';
+var authUser = 'userForUsersSuite@yahoo.com';
 var authPass = 'userForUsersSuitePassword';
 var registrationId = 'regid-for-userForUsersSuite';
 
@@ -71,14 +71,27 @@ describe('Users', function() {
     .post('/api/users')
     .set(authHeader)
     .set(registrationHeader)
-    .send({email: 'superman', password: 'superSecret123'})
+    .send({email: 'superman@heroes.us', password: 'superSecret123'})
     .end(function(err, res) {
         res.should.have.status(200);
         res.body.should.be.a('object')
         done();
     });
-
   });
+
+  it('should return 400 on an attempt to create an email with an invalid email address on /users/ POST', function (done){
+    chai.request(server)
+    .post('/api/users')
+    .set(authHeader)
+    .set(registrationHeader)
+    .send({email: 'superman', password: 'superSecret123'})
+    .end(function(err, res) {
+        res.should.have.status(400);
+        res.body.should.be.a('object')
+        done();
+    });
+  });
+
   it('should update a SINGLE user on /user/<id> PUT');
   it('should delete a SINGLE user on /user/<id> DELETE');
 });

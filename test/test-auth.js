@@ -8,7 +8,7 @@ var assert = chai.assert;
 var _ = require('underscore');
 var util = require('util');
 
-var testUser = 'amjed@gmx.de';
+var testUser = 'testuser@gmx.de';
 var testPassword = 'amjed123';
 var testRegistrationId = 'id123id';
 
