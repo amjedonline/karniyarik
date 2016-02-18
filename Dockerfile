@@ -3,6 +3,7 @@ MAINTAINER Mohammed Amjed CHand <amjedonline@gmail.com>
 RUN apt-get update && apt-get install -y \
     curl \
     nodejs \
+    nodejs-legacy \
     npm \
     git
 
@@ -14,4 +15,5 @@ WORKDIR /var
 RUN git clone https://github.com/amjedonline/karniyarik.git
 
 WORKDIR /var/karniyarik/
-ENTRYPOINT ["node", "server.js"]
+RUN npm install
+CMD ["node", "server.js"]
