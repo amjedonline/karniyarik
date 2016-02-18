@@ -155,8 +155,8 @@ describe('Drivers', function() {
           });
           done();
       });
-
     });
+
     it('should delete a SINGLE driver on /api/drivers/<id> DELETE', function (done){
       chai.request(server)
       .delete('/api/drivers/' + testDriverId)

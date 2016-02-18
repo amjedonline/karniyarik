@@ -100,4 +100,86 @@ describe('Passengers', function() {
         });
     });
 
+
+    it('should list a SINGLE passenger on /api/passengers/<id> GET', function(done) {
+        chai.request(server)
+        .get('/api/passengers/'+testPassengerId)
+        .set(authHeader)
+        .set(registrationHeader)
+        .end(function (err, res) {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.a('object');
+
+            var isMatch = _.isMatch(res.body, testPassenger);
+            assert.isTrue(isMatch, "The created Passenger has all the properties requested in post.");
+            done();
+        });
+    });
+
+    it('should update a SINGLE passenger on /api/passengers/<id> PUT', function (done){
+      var newValue = {
+        fname: "Til",
+        lname: "Schweiger",
+        email: "til.schweiger@gmx.de",
+        gender: "Male",
+        dob: "1967-10-11T00:00:00.000Z",
+        mobile: "982374908",
+        country: "Germany",
+        state: "Nordrhein Westfallen",
+        city: "Duesseldorf",
+        addressline1: "Housenummer 42",
+        addressline2: "Tamaradanz Strasse",
+        postal: "10178"
+      }
+      chai.request(server)
+      .put('/api/passengers/' + testPassengerId)
+      .set(authHeader)
+      .set(registrationHeader)
+      .send(newValue)
+      .end(function(err, res) {
+          res.should.have.status(200);
+          chai.request(server)
+          .get('/api/passengers/' + testPassengerId)
+          .set(authHeader)
+          .set(registrationHeader)
+          .end(function (err, res) {
+            res.should.have.status(200);
+            assert.isTrue(_.isMatch(res.body, newValue));
+            assert.ok('Put on /passengers/passengerId updates the Passenger.');
+          });
+          done();
+      });
+    });
+
+    it('should delete a SINGLE passenger on /api/passengers/<id> DELETE', function (done){
+      chai.request(server)
+      .delete('/api/passengers/' + testPassengerId)
+      .set(authHeader)
+      .set(registrationHeader)
+      .end(function (err, res) {
+        res.should.have.status(200);
+        chai.request(server)
+        .get('/api/passengers/' + testPassengerId)
+        .set(authHeader)
+        .set(registrationHeader)
+        .end(function (err, res) {
+          res.should.have.status(404);
+          assert.ok('Delete on /passengers/passengerId deletes the Passenger.');
+        });
+      });
+      done();
+    });
+
+    it('should return 404 on an attempt to delete a NON-EXISTING passenger on /api/passengers/<id> DELETE', function (done){
+      chai.request(server)
+      .delete('/api/passengers/' + '35acbadd0ce9321d51ba7e9c')
+      .set(authHeader)
+      .set(registrationHeader)
+      .end(function (err, res) {
+        res.should.have.status(404);
+      });
+      done();
+    });
+
 });
