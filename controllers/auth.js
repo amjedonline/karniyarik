@@ -12,10 +12,10 @@ passport.use(new BearerStrategy({ passReqToCallback: true },
     var decodedToken = jsonwebtoken.verify(jwToken, secret);
     // console.log(util.inspect(decodedToken));
 
-    User.findOne({username:decodedToken.username}, function (err, user) {
+    User.findOne({email:decodedToken.email}, function (err, user) {
         if (err) { return done(err); }
 
-        // No user found with that username
+        // No user found with that email
         if(!user) { return done(null, false); }
 
         // RegistrationId in header is defined

@@ -37,7 +37,7 @@ Install Postman for Mac OS or a Google chrome plugin from [here](https://www.get
 POST /api/users
 Body
 ```
-{ "username": "mustermann", "password": "secret", "registration_id": "myregistrationgid123"}
+{ "email": "mustermann@gmx.de", "password": "secret", "registration_id": "myregistrationgid123"}
 ```
 2. Note the response object and copy the token for future request.
 3. Update the other requests RegistrationId header with the newly generated token

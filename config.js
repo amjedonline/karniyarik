@@ -11,7 +11,7 @@ config.development = {
 config.test = {
   db: {
     host: '192.168.99.100',
-    name: 'test',
+    name: 'test1',
     port: '27017'
   }
 }

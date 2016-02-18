@@ -11,9 +11,9 @@ var async = require('async');
 var createResponseObject = function(user, registrationId) {
 
   var validityInMs = ms('7d')
-  var options = { notBefore: validityInMs, issuer: 'Alotaksim/Karniyarik', subject: user.username };
+  var options = { notBefore: validityInMs, issuer: 'Alotaksim/Karniyarik', subject: user.email };
 
-  var payload = { username: user.username, registration_id: registrationId };
+  var payload = { email: user.email, registration_id: registrationId };
   var secret = 'alotaksim-secret';
   var token = jsonwebtoken.sign( payload, secret );
 
@@ -24,12 +24,12 @@ var createResponseObject = function(user, registrationId) {
 };
 
 exports.createJwtToken = function(req, res) {
-  var username = req.body.username;
+  var email = req.body.email;
   var password = req.body.password;
 
   var registrationId = req.body.registration_id;
 
-  User.findOne({username:username}, function (err, user) {
+  User.findOne({email:email}, function (err, user) {
       if (err) {
         res.status(500).send({
           'ERR_CODE':'UNKNOWN',
@@ -38,11 +38,11 @@ exports.createJwtToken = function(req, res) {
         return;
       }
 
-      // No user found with that username
+      // No user found with that email
       var userCheck = function(callback){
         if (!user)
           callback({
-            'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
+            'ERR_CODE':'EMAIL_PASSWORD_NOT_MATCH',
             message:'Usename and password does not match.'
           });
          else
@@ -53,7 +53,7 @@ exports.createJwtToken = function(req, res) {
         user.verifyPassword(password, function (err, isMatch) {
           if(err || !isMatch) {
             callback({
-              'ERR_CODE':'USERNAME_PASSWORD_NOT_MATCH',
+              'ERR_CODE':'EMAIL_PASSWORD_NOT_MATCH',
               message:'Usename and password does not match.'
             });
           } else {

@@ -44,7 +44,7 @@ describe('Passengers', function() {
     var createTestUser = function(callback) {
       chai.request(server)
         .post('/api/users')
-        .send({username: authUser, password: authPass})
+        .send({email: authUser, password: authPass})
         .end(function(err, res) {
             res.should.have.status(200);
             res.body.should.be.a('object')
@@ -56,7 +56,7 @@ describe('Passengers', function() {
     var createAccessToken = function (callback) {
       chai.request(server)
       .post('/api/authentication/jwt_token')
-      .send({username: authUser, password: authPass, registration_id: registrationId})
+      .send({email: authUser, password: authPass, registration_id: registrationId})
       .end(function(err, res) {
           res.should.have.status(200);
           authHeader = { 'Authorization': 'Bearer '+ res.body.token };

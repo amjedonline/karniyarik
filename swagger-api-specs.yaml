@@ -18,16 +18,16 @@ paths:
     post:
       summary: Authentication and token creation
       description: |
-        The authentication endpoint accepts username and password for authentication and in turn creates an access token for to facilitate  identity for eventual resource access.
+        The authentication endpoint accepts email and password for authentication and in turn creates an access token for to facilitate  identity for eventual resource access.
       parameters:
-        - name: username
+        - name: email
           in: body
-          description: Username of the registered user.
+          description: Email address of the registered user.
           required: true
           type: string
         - name: password
           in: body
-          description: password for the registered username.
+          description: password for the registered email.
           required: true
           type: string
         - name: registration_id
@@ -77,9 +77,9 @@ paths:
       summary: Create user
       description: Create a new user in the system.
       parameters:
-        - name: username
+        - name: email
           in: body
-          description: unique username.
+          description: unique email.
           required: true
           type: string
         - name: password
@@ -197,7 +197,7 @@ definitions:
       user_id:
         type: string
         description: Unique identifier representing a specific user
-      username:
+      email:
         type: string
         description: Unique string identifying the user in the sytem"
       password:
