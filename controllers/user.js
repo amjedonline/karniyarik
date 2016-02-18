@@ -25,6 +25,11 @@ exports.postUsers = function(req, res) {
 
   user.save(function(err){
     if(err){
+      //TODO: control this ?
+      if (err.name === 'MongoError' && err.code === 11000) {
+        // Duplicate username
+        return res.status(400).send({ succes: false, message: 'User with email address already exist.' });
+      }
       res.status(500).send({message: 'Cannot create user with given email and password.'});
       console.log(err);
     }else{

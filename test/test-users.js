@@ -92,6 +92,51 @@ describe('Users', function() {
     });
   });
 
+  it('should return 400 on an attempt to create an email with a duplicate email address on /users/ POST', function (done){
+
+    var createFirst = function (cb){
+      chai.request(server)
+        .post('/api/users')
+        .set(authHeader)
+        .set(registrationHeader)
+        .send({email: 'bob@foo.com', password: 'superSecret123'})
+        .end(function(err, res) {
+            if(err){
+              cb(err);
+            } else{
+              res.should.have.status(200);
+              res.body.should.be.a('object')
+              cb();
+            }
+        });
+    }
+
+    var createDuplicate = function (cb){
+      chai.request(server)
+        .post('/api/users')
+        .set(authHeader)
+        .set(registrationHeader)
+        .send({email: 'bob@foo.com', password: 'bobbylovescoffee'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.body.should.be.a('object')
+            if(err){
+              cb(err);
+            } else {
+              cb();
+            }
+        });
+    }
+
+    async.series( [createFirst, createDuplicate], function(err) {
+      if (!err){
+        assert.fail('Failed to Test Duplicate user email address prevention case.');
+      }
+      done();
+    });
+
+  });
+
   it('should update a SINGLE user on /user/<id> PUT');
   it('should delete a SINGLE user on /user/<id> DELETE');
 });
