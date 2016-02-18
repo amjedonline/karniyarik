@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
 // Define new schema
-var DriverSchema = new mongoose.Schema({
+var PassengerSchema = new mongoose.Schema({
   userId: String,
   fname: {
     type: String,
@@ -25,20 +25,6 @@ var DriverSchema = new mongoose.Schema({
   mobile: {
     type: String,
     maxLength: 12
-  },
-  licensenumber: {
-    type: String,
-    maxLength: 20
-  },
-  licenseexpirydate: {
-    type: Date
-  },
-  insurancenumber: {
-    type: String,
-    maxLength: 20
-  },
-  insuranceexpirydate: {
-    type: Date
   },
   country: {
     type: String,
@@ -69,6 +55,6 @@ var DriverSchema = new mongoose.Schema({
 
 
 //Export the mongoose model
-// this makes the class name Driver available for us !
+// this makes the class name Passenger available for us !
 // this model class has the save/update methods available
-module.exports = mongoose.model('Driver', DriverSchema)
+module.exports = mongoose.model('Passenger', PassengerSchema)

@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var driverController = require('./controllers/driver');
 var userController = require('./controllers/user');
+var passengerController = require('./controllers/passenger');
 var jwtController  = require('./controllers/jwt');
 var util = require('util');
 
@@ -64,6 +65,17 @@ router.route('/drivers/:driver_id')
   .get(authController.isAuthenticated, driverController.getDriver)
   .put(authController.isAuthenticated, driverController.putDriver)
   .delete(authController.isAuthenticated, driverController.deleteDriver);
+
+router.route('/passengers')
+  .post(authController.isAuthenticated, passengerController.postPassengers)
+  .get(authController.isAuthenticated, passengerController.getPassengers);
+
+// 1. get one
+router.route('/passengers/:passenger_id')
+  .get(authController.isAuthenticated, passengerController.getPassenger)
+  .put(authController.isAuthenticated, passengerController.putPassenger)
+  .delete(authController.isAuthenticated, passengerController.deletePassenger);
+
 
 // User request handling
 router.route('/users')

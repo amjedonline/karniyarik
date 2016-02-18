@@ -77,7 +77,7 @@ describe('Drivers', function() {
         .send(testDriver)
         .end(function (err, res) {
           testDriverId = res.body._id;
-          assert.ok('Created authentication token.')
+          assert.ok('Created a test driver.')
           callback();
         });
       };
