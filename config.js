@@ -2,7 +2,7 @@ var config = {};
 
 config.development = {
   db: {
-    host: '192.168.99.100',
+    host: 'localhost',
     name: 'karniyarik',
     port: '27017'
   }
@@ -10,8 +10,8 @@ config.development = {
 
 config.test = {
   db: {
-    host: '192.168.99.100',
-    name: 'test4',
+    host: 'localhost',
+    name: 'test14',
     port: '27017'
   }
 }
