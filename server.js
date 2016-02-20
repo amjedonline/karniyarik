@@ -5,6 +5,8 @@ var bodyParser = require('body-parser');
 var driverController = require('./controllers/driver');
 var userController = require('./controllers/user');
 var passengerController = require('./controllers/passenger');
+var taxiController = require('./controllers/taxi');
+
 var jwtController  = require('./controllers/jwt');
 var util = require('util');
 
@@ -76,6 +78,19 @@ router.route('/passengers/:passenger_id')
   .put(authController.isAuthenticated, passengerController.putPassenger)
   .delete(authController.isAuthenticated, passengerController.deletePassenger);
 
+router.route('/taxis')
+  .post(authController.isAuthenticated, taxiController.postTaxis)
+  .get(authController.isAuthenticated, taxiController.getTaxis);
+
+// 1. get one
+router.route('/taxis/:taxi_id')
+  .get(authController.isAuthenticated, taxiController.getTaxi)
+  .put(authController.isAuthenticated, taxiController.putTaxi)
+  .delete(authController.isAuthenticated, taxiController.deleteTaxi);
+
+// 1. search one
+router.route('/taxis/:number')
+  .get(authController.isAuthenticated, taxiController.searchTaxi);
 
 // User request handling
 router.route('/users')

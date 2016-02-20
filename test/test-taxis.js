@@ -13,31 +13,31 @@ var _ = require('underscore');
 
 chai.use(chaiHttp);
 
-var testPassenger = {
-  fname: "Alice",
-  lname: "Cayenne",
-  email: "alice.cayenne@gmail.com",
-  gender: "Female",
-  dob: "1991-02-06T00:00:00.000Z",
-  mobile: "1234567890",
-  country: "US",
-  state: "Washington",
-  city: "Seattle",
-  addressline1: "Housenummer 3",
-  addressline2: "Gates Avenue",
-  postal: "W-1456"
+var testTaxi = {
+  number: "IS 12345",
+  manufacturer: "Audi",
+  model: "TT",
+  bodyStyle: "Coupe",
+  power: 180,
+  colour: "Black",
+  capacity: 2,
+  maximumLuggage: 500,
+  motorExpiry: "2031-02-06T00:00:00.000Z",
+  insuranceNumber: "Insure-123",
+  insuranceExpiryDate: "2021-11-13T00:00:00.000Z",
+  pcoLicenseExpiryDate: "2025-01-30T00:00:00.000Z",
+  status: "Online"
 }
 
-var testPassengerId = "";
-var authUser = "passengerTestingUser1@alotaksim.tr";
-var authPass = "passengerTestingPassword1";
-var registrationId = 'passengerTestingUserRegistration1';
+var testTaxiId = "";
+var authUser = "taxiTestingUser1@alotaksim.tr";
+var authPass = "taxiTestingPassword1";
+var registrationId = 'taxiTestingUserRegistration1';
 var authHeader = '';
 var registrationHeader = '';
 
 
-describe('Passengers', function() {
-
+describe('Taxis', function() {
 
   before(function(done) {
 
@@ -66,30 +66,33 @@ describe('Passengers', function() {
       });
     };
 
-    var createTestPassenger = function(callback) {
+    var createTestTaxi = function(callback) {
       // create test data before
       chai.request(server)
-      .post('/api/passengers')
+      .post('/api/taxis')
       .set(authHeader)
       .set(registrationHeader)
-      .send(testPassenger)
+      .send(testTaxi)
       .end(function (err, res) {
-        testPassengerId = res.body._id;
-        assert.ok('Created a test Passenger.')
+        res.should.have.status(200);
+        res.should.be.json;
+        testTaxiId = res.body._id;
+        assert.ok('Created a test Taxi.')
+        //console.log('Created taxi ' + util.inspect(res));
         callback();
       });
     };
 
-    async.series( [ createTestUser, createAccessToken, createTestPassenger ], function(err) {
+    async.series( [ createTestUser, createAccessToken, createTestTaxi ], function(err) {
       if (err)
-        assert.fail('Failed to create Test fixtures for Passengers test suite.');
+        assert.fail('Failed to create Test fixtures for Taxis test suite.');
       done();
     });
   });
 
-    it('should list All Passengers on /api/passengers GET', function (done) {
+    it('should list All Taxis on /api/taxis GET', function (done) {
         chai.request(server)
-        .get('/api/passengers')
+        .get('/api/taxis')
         .set(authHeader)
         .set(registrationHeader)
         .end(function(err, res) {
@@ -101,9 +104,9 @@ describe('Passengers', function() {
     });
 
 
-    it('should list a SINGLE passenger on /api/passengers/<id> GET', function(done) {
+    it('should list a SINGLE taxi on /api/taxis/<id> GET', function(done) {
         chai.request(server)
-        .get('/api/passengers/'+testPassengerId)
+        .get('/api/taxis/'+testTaxiId)
         .set(authHeader)
         .set(registrationHeader)
         .end(function (err, res) {
@@ -111,15 +114,16 @@ describe('Passengers', function() {
             res.should.be.json;
             res.body.should.be.a('object');
 
-            var isMatch = _.isMatch(res.body, testPassenger);
-            assert.isTrue(isMatch, "The created Passenger has all the properties requested in post.");
+            var isMatch = _.isMatch(res.body, testTaxi);
+            // console.log('Comparing ' + util.inspect(diff(res.body, testTaxi)));
+            assert.isTrue(isMatch, "The created Taxi has all the properties requested in post.");
             done();
         });
     });
 
-    it('should return 400 on unauthorized attempt to get a passenger on /api/passengers/<id> GET', function(done) {
+    it('should return 400 on unauthorized attempt to get a taxi on /api/taxis/<id> GET', function(done) {
         chai.request(server)
-        .get('/api/passengers/'+testPassengerId)
+        .get('/api/taxis/'+testTaxiId)
         .set(registrationHeader)
         .end(function (err, res) {
             res.should.have.status(401);
@@ -127,9 +131,9 @@ describe('Passengers', function() {
         });
     });
 
-    it('should return 404 on attempt to get a NON-EXISTING passenger on /api/passengers/<id> GET', function(done) {
+    it('should return 404 on attempt to get a NON-EXISTING taxi on /api/taxis/<id> GET', function(done) {
         chai.request(server)
-        .get('/api/passengers/'+'35acbadd0ce9321d51ba7e9c')
+        .get('/api/taxis/'+'35acbadd0ce9321d51ba7e9c')
         .set(authHeader)
         .set(registrationHeader)
         .end(function (err, res) {
@@ -139,49 +143,52 @@ describe('Passengers', function() {
     });
 
 
-    it('should update a SINGLE passenger on /api/passengers/<id> PUT', function (done){
+    it('should update a SINGLE taxi on /api/taxis/<id> PUT', function (done){
       var newValue = {
-        fname: "Til",
-        lname: "Schweiger",
-        email: "til.schweiger@gmx.de",
-        gender: "Male",
-        dob: "1967-10-11T00:00:00.000Z",
-        mobile: "982374908",
-        country: "Germany",
-        state: "Nordrhein Westfallen",
-        city: "Duesseldorf",
-        addressline1: "Housenummer 42",
-        addressline2: "Tamaradanz Strasse",
-        postal: "10178"
+        number: "AK 73829",
+        manufacturer: "Mercedes",
+        model: "Z90",
+        bodyStyle: "Sedan",
+        power: "250",
+        colour: "White",
+        capacity: "5",
+        maximumLuggage: "1500",
+        motorExpiry: "2025-02-06T00:00:00.000Z",
+        insuranceNumber: "xyz-Insure-123",
+        insuranceExpiryDate: "2027-11-13T00:00:00.000Z",
+        pcoInsuranceNumber: "567-Pco-Insure-123",
+        pcoLicenseExpiryDate: "2020-01-30T00:00:00.000Z",
+        status: "Offline"
       }
+
       chai.request(server)
-      .put('/api/passengers/' + testPassengerId)
+      .put('/api/taxis/' + testTaxiId)
       .set(authHeader)
       .set(registrationHeader)
       .send(newValue)
       .end(function(err, res) {
           res.should.have.status(200);
           chai.request(server)
-          .get('/api/passengers/' + testPassengerId)
+          .get('/api/taxis/' + testTaxiId)
           .set(authHeader)
           .set(registrationHeader)
           .end(function (err, res) {
             res.should.have.status(200);
             assert.isTrue(_.isMatch(res.body, newValue));
-            assert.ok('Put on /passengers/passengerId updates the Passenger.');
+            assert.ok('Put on /taxis/taxiId updates the Taxi.');
           });
           done();
       });
     });
 
-    it('should return 401 an unauthorized attempt to PUT/Updated a passenger on /api/passengers/<id> PUT', function (done){
+    it('should return 401 an unauthorized attempt to PUT/Updated a taxi on /api/taxis/<id> PUT', function (done){
       var newValue = {
-        fname: "Dr",
-        lname: "Evil",
-        email: "black.hat@anonymous.de",
+        insuranceNumber: "xyz-Insure-123",
+        insuranceExpiryDate: "2027-11-13T00:00:00.000Z",
+        pcoInsuranceNumber: "567-Pco-Insure-123"
       }
       chai.request(server)
-      .put('/api/passengers/' + testPassengerId)
+      .put('/api/taxis/' + testTaxiId)
       .set(registrationHeader)
       .send(newValue)
       .end(function(err, res) {
@@ -190,14 +197,14 @@ describe('Passengers', function() {
       });
     });
 
-    it('should return 404 an attempt to PUT/Updated a NON-EXISTING passenger on /api/passengers/<id> PUT', function (done){
+    it('should return 404 an attempt to PUT/Updated a NON-EXISTING taxi on /api/taxis/<id> PUT', function (done){
       var newValue = {
-        fname: "Dr",
-        lname: "Evil",
-        email: "black.hat@anonymous.de",
+        insuranceNumber: "xyz-Insure-123",
+        insuranceExpiryDate: "2027-11-13T00:00:00.000Z",
+        pcoInsuranceNumber: "567-Pco-Insure-123"
       }
       chai.request(server)
-      .put('/api/passengers/' + '35acbadd0ce9321d51ba7e9c')
+      .put('/api/taxis/' + '35acbadd0ce9321d51ba7e9c')
       .set(authHeader)
       .set(registrationHeader)
       .send(newValue)
@@ -207,28 +214,28 @@ describe('Passengers', function() {
       });
     });
 
-    it('should delete a SINGLE passenger on /api/passengers/<id> DELETE', function (done){
+    it('should delete a SINGLE taxi on /api/taxis/<id> DELETE', function (done){
       chai.request(server)
-      .delete('/api/passengers/' + testPassengerId)
+      .delete('/api/taxis/' + testTaxiId)
       .set(authHeader)
       .set(registrationHeader)
       .end(function (err, res) {
         res.should.have.status(200);
         chai.request(server)
-        .get('/api/passengers/' + testPassengerId)
+        .get('/api/taxis/' + testTaxiId)
         .set(authHeader)
         .set(registrationHeader)
         .end(function (err, res) {
           res.should.have.status(404);
-          assert.ok('Delete on /passengers/passengerId deletes the Passenger.');
+          assert.ok('Delete on /taxis/taxiId deletes the Taxi.');
         });
       });
       done();
     });
 
-    it('should return 404 on an attempt to delete a NON-EXISTING passenger on /api/passengers/<id> DELETE', function (done){
+    it('should return 404 on an attempt to delete a NON-EXISTING taxi on /api/taxis/<id> DELETE', function (done){
       chai.request(server)
-      .delete('/api/passengers/' + '35acbadd0ce9321d51ba7e9c')
+      .delete('/api/taxis/' + '35acbadd0ce9321d51ba7e9c')
       .set(authHeader)
       .set(registrationHeader)
       .end(function (err, res) {
