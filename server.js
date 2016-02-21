@@ -88,8 +88,15 @@ router.route('/taxis/:taxi_id')
   .put(authController.isAuthenticated, taxiController.putTaxi)
   .delete(authController.isAuthenticated, taxiController.deleteTaxi);
 
+/**
+Implementing search as a resource.
+Although major consensus is to use Post and create search resource.
+I find it more sensible to query/get by parameter.
+This enables bookmarking and caching.
+http://stackoverflow.com/questions/5020704/how-to-design-restful-search-filtering
+**/
 // 1. search one
-router.route('/taxis/:number')
+router.route('/taxis/searches/bynumber/:number')
   .get(authController.isAuthenticated, taxiController.searchTaxi);
 
 // User request handling

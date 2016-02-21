@@ -97,9 +97,9 @@ exports.searchTaxi = function(req, res) {
     if(err){
       res.status(500).send({message: 'There was a problem accessing the taxi.'});
     } else if (!taxi) {
-      res.status(404).send({message:'Either a taxi with this id does not exist, or you dont have access rights to this taxi.'});
+      res.status(200).json([]);
     } else {
-      res.status(200).json(taxi);
+      res.status(200).json([taxi]);
     }
   });
 };

@@ -142,6 +142,52 @@ describe('Taxis', function() {
         });
     });
 
+    /**
+    Test cases for search Taxi
+    **/
+    it('should list a SINGLE taxi on /api/taxis/searches/byNumber/<number> GET', function(done) {
+        chai.request(server)
+        .get('/api/taxis/searches/byNumber/'+testTaxi.number)
+        .set(authHeader)
+        .set(registrationHeader)
+        .end(function (err, res) {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.a('array');
+
+            var isMatch = _.isMatch(res.body[0], testTaxi);
+            // console.log('Comparing ' + util.inspect(diff(res.body, testTaxi)));
+            assert.isTrue(isMatch, "Created test taxi found using searchTaxi endpoint.");
+            done();
+        });
+    });
+
+    it('should return 400 on unauthorized attempt to get a taxi on /api/taxis/searches/byNumber/<number> GET', function(done) {
+        chai.request(server)
+        .get('/api/taxis/searches/byNumber/'+testTaxiId)
+        .set(registrationHeader)
+        .end(function (err, res) {
+            res.should.have.status(401);
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+    it('should return 200 with an empty JSON object Array if no taxi was found on /api/taxis/searches/byNumber/<number> GET', function(done) {
+        chai.request(server)
+        .get('/api/taxis/searches/byNumber/'+'IZ 7373')
+        .set(authHeader)
+        .set(registrationHeader)
+        .end(function (err, res) {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            // test for empty array
+            assert.isTrue(res.body.length == 0);
+            done();
+        });
+    });
+
+/** Test cases for PUT **/
 
     it('should update a SINGLE taxi on /api/taxis/<id> PUT', function (done){
       var newValue = {
