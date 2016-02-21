@@ -49,7 +49,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /users/price:
+  /users/userId:
     get:
       summary: Get user object
       description: |
@@ -131,6 +131,66 @@ paths:
           description: Last name.
           required: true
           type: string
+        - name: email
+          in: body
+          description: Email address of the driver
+          required: true
+          type: string
+        - name: gender
+          in: body
+          required: true
+          type: string
+        - name: dob
+          in: body
+          description: Date of birth
+          required: true
+          type: false
+        - name: mobile
+          in: body
+          description: Mobile phone number.
+          required: true
+          type: string
+        - name: licenseNumer
+          in: body
+          description: Driving license number.
+          required: true
+          type: string
+        - name: licenseExpiryDate
+          in: body
+          required: false
+          type: string
+        - name: insuranceNumber
+          in: body
+          required: false
+          type: string
+        - name: insuranceExpiryDate
+          in: body
+          required: false
+          type: string
+        - name: country
+          in: body
+          required: true
+          type: string
+        - name: state
+          in: body
+          required: true
+          type: string
+        - name: city
+          in: body
+          required: true
+          type: string
+        - name: addressLine1
+          in: body
+          required: true
+          type: string
+        - name: addressLine2
+          in: body
+          required: true
+          type: string
+        - name: postal
+          in: body
+          required: true
+          type: string
       responses:
         200:
           description: Profile information of the newly created driver in Json format.
@@ -163,6 +223,250 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /taxis/:
+    get:
+      summary: Get all taxis
+      description: The Taxi endpoint deals with the taxis independent of the drivers/passengers.
+      tags:
+        - taxis
+      responses:
+        200:
+          description: An array of all taxis in Json format.
+          schema:
+            $ref: '#/definitions/Taxi'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: create a taxi
+      description: create a new taxi profile.
+      tags:
+        - taxis
+      parameters:
+        - name: number
+          in: body
+          description: The taxi registration number
+          required: true
+          type: string
+        - name: manufacturer
+          in: body
+          description: This could be one of the following: 'Audi', 'Mercedes', 'Volkswagen', 'BMW', 'Toyota', 'Citron', 'Suzuki', 'Renault'.
+          required: false
+          type: string
+        - name: model
+          in: body
+          description: Model of the car
+          required: true
+          type: string
+        - name: bodyStyle
+          in: body
+          description: Could be one of 'Convertibles', 'Coupe', 'Hatchbacks', 'Vans', 'Sedans', 'Suvs', 'Trucks', 'Wagons'
+          required: false
+          type: string
+        - name: power
+          in: body
+          description: Power in Horse power unit.
+          required: false
+          type: Number
+        - name: colour
+          in: body
+          required: false
+          type: string
+        - name: capacity
+          in: body
+          description: Number of people that can travel inclusive driver.
+          required: true
+          type: Number
+        - name: maximumLuggage
+          in: body
+          description: Maximum Luggage the taxi can carry in Kilogram/Kg.
+          required: false
+          type: Number
+        - name: MotorExpiry
+          in: body
+          required: false
+          type: Date
+        - name: insuranceNumber
+          in: body
+          required: false
+          type: string
+        - name: insuranceExpiryDate
+          in: body
+          required: false
+          type: string
+        - name: pcoLicenseNumber
+          in: body
+          required: false
+          type: string
+        - name: pcoLicenseExpiryDate
+          in: body
+          required: false
+          type: string
+        - name: status
+          description: Can be one of the 'Online', 'Offline', 'Blocked'
+          in: body
+          required: false
+          type: string
+        - name: createdBy
+          description: User Id of the user who created this taxi.
+          in: body
+          required: false
+          type: string
+      responses:
+        200:
+          description: Profile information of the newly created driver in Json format.
+      responses:
+        200:
+          description: Profile information for a driver.
+          schema:
+            $ref: '#/definitions/Driver'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /taxis/taxi_id:
+    get:
+      summary: A single taxi details
+      description: Returns a specific taxi details.
+      parameters:
+        - name: taxi_id
+          in: path
+          type: string
+          description: id of the registered taxi in the system.
+      tags:
+        - taxi
+      responses:
+        200:
+          description: Taxi object in Json format.
+          schema:
+            $ref: '#/definitions/Taxi'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update details of a taxi
+      parameters:
+        - name: taxi_id
+          in: path
+          type: string
+          description: id of the registered taxi in the system.
+        - name: number
+          in: body
+          description: The taxi registration number
+          required: true
+          type: string
+        - name: manufacturer
+          in: body
+          description: This could be one of the following: 'Audi', 'Mercedes', 'Volkswagen', 'BMW', 'Toyota', 'Citron', 'Suzuki', 'Renault'.
+          required: false
+          type: string
+        - name: model
+          in: body
+          description: Model of the car
+          required: true
+          type: string
+        - name: bodyStyle
+          in: body
+          description: Could be one of 'Convertibles', 'Coupe', 'Hatchbacks', 'Vans', 'Sedans', 'Suvs', 'Trucks', 'Wagons'
+          required: false
+          type: string
+        - name: power
+          in: body
+          description: Power in Horse power unit.
+          required: false
+          type: Number
+        - name: colour
+          in: body
+          required: false
+          type: string
+        - name: capacity
+          in: body
+          description: Number of people that can travel inclusive driver.
+          required: true
+          type: Number
+        - name: maximumLuggage
+          in: body
+          description: Maximum Luggage the taxi can carry in Kilogram/Kg.
+          required: false
+          type: Number
+        - name: MotorExpiry
+          in: body
+          required: false
+          type: Date
+        - name: insuranceNumber
+          in: body
+          required: false
+          type: string
+        - name: insuranceExpiryDate
+          in: body
+          required: false
+          type: string
+        - name: pcoLicenseNumber
+          in: body
+          required: false
+          type: string
+        - name: pcoLicenseExpiryDate
+          in: body
+          required: false
+          type: string
+        - name: status
+          description: Can be one of the 'Online', 'Offline', 'Blocked'
+          in: body
+          required: false
+          type: string
+      responses:
+        200:
+          description: Updated taxi object in Json format.
+      responses:
+        200:
+          description: Updated taxi details.
+          schema:
+            $ref: '#/definitions/Taxi'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete taxi details
+      description: Remove the taxi details permanently.
+      parameters:
+        - name: taxi_id
+          in: path
+          type: string
+          description: id of the registered taxi in the system.
+      tags:
+        - taxi
+      responses:
+        200:
+          description: Successfully deleted the taxi details.
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /taxis/searches/byNumber/_number:
+    get:
+      summary: Search a taxi by number
+      description: Returns a List of taxis matching the number.
+      parameters:
+        - name: _number
+          in: path
+          type: string
+          description: _number of the registered taxi in the system to search for.
+      tags:
+        - taxi
+      responses:
+        200:
+          description: An array of Taxi objects in Json format, who have the matching taxi registration number.
+          schema:
+            $ref: '#/definitions/Taxi'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   TokenResponse:
     type: object
@@ -203,6 +507,67 @@ definitions:
       password:
         type: string
         description: password.
+  Taxi:
+    type: object
+    properties:
+      taxi_id:
+        type: string
+        description: id of the registered taxi in the system.
+
+      number:
+        type: string
+        description: The taxi registration number
+
+      manufacturer:
+        type: string
+        description: This could be one of the following: 'Audi', 'Mercedes', 'Volkswagen', 'BMW', 'Toyota', 'Citron', 'Suzuki', 'Renault'.
+
+      model:
+        type: string
+        description: Model of the car
+
+      bodyStyle:
+        type: string
+        description: Could be one of 'Convertibles', 'Coupe', 'Hatchbacks', 'Vans', 'Sedans', 'Suvs', 'Trucks', 'Wagons'
+
+      power:
+        type: Number
+        description: Power in Horse power unit.
+
+      colour:
+        type: string
+        description: Colour of the car
+
+      capacity:
+        type: Number
+        description: Number of people that can travel inclusive driver.
+
+      maximumLuggage:
+        type: Number
+        description: Maximum Luggage the taxi can carry in Kilogram/Kg.
+
+      motorExpiry:
+        type: Date
+        description: Expiry date of the engine/motor.
+
+      insuranceNumber:
+        type: string
+
+      insuranceExpiryDate:
+        type: string
+
+      pcoLicenseNumber:
+        type: string
+
+      pcoLicenseExpiryDate:
+        type: string
+        description: Date of expiry of license
+
+      status:
+        type: string
+        description: Can be one of the 'Online', 'Offline', 'Blocked'
+
+
   Error:
     type: object
     properties:
