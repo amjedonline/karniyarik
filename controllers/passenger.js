@@ -5,7 +5,9 @@ var _ = require('underscore');
 var util = require('util');
 
 //Create endpoint /api/passengers for POSTS
-exports.postPassengers = function(req, res){
+
+// not used anymore ?
+var postPassengers = function(req, res){
   var passenger = new Passenger();
 
   //set the passenger properties that come from the POST data
@@ -41,7 +43,7 @@ exports.postPassengers = function(req, res){
       // console.log('Sending passenger ' + util.inspect(passenger));
       res.status(200).json(passenger);
     }
-  })
+  });
 };
 
 //get all
@@ -59,7 +61,6 @@ exports.getPassengers = function(req, res) {
 
 //get one
 exports.getPassenger = function(req, res) {
-  console.log(util.inspect(req.params));
   Passenger.findOne({ userId: req.user._id, _id: req.params.passenger_id }, function(err, passenger){
     if(err){
       console.log(util.inspect(err));
@@ -72,12 +73,36 @@ exports.getPassenger = function(req, res) {
   });
 };
 
+//get one
+exports.getPassengerForUser = function(req, res) {
+  Passenger.findOne({userId: req.user._id}, function(err, passenger){
+    if(err){
+      console.log(util.inspect(err));
+      res.status(500).send({message: 'There was a problem accessing the passenger.'});
+    } else if (!passenger) {
+      console.log(util.inspect(req));
+      res.status(404).send({message:'Either a passenger with this id does not exist, or you dont have access rights to this passenger.'});
+    } else {
+      res.status(200).json(passenger);
+    }
+  });
+};
+
 exports.putPassenger = function(req, res) {
   var allowedFields = ["fname", "lname", "gender", "dob", "mobile", "licensenumber",
         "licenseexpirydate", "insurancenumber", "insuranceexpirydate", "country", "state", "city",
          "addressline1", "addressline2", "postal"];
   var fieldsToUpdate = _.intersection(Object.keys(req.body), allowedFields);
-  var reducer = function(map, el){ map[el] = req.body[el]; return map; }
+  var reducer = function(map, el){
+    var dateTypes = ["licenseexpirydate", "insuranceexpirydate", "dob"];
+    if ( _.contains(dateTypes, el) && !_.isEmpty(req.body[el])){
+      // in utc format
+      map[el] = new Date(req.body[el]);
+    } else {
+      map[el] = req.body[el];
+    }
+    return map;
+  }
   var keyValuesToUpdate = _.reduce(fieldsToUpdate, reducer, {});
 
   Passenger.findOne({ userId: req.user._id, _id: req.params.passenger_id }, function(err, passenger){

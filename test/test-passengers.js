@@ -66,22 +66,33 @@ describe('Passengers', function() {
       });
     };
 
-    var createTestPassenger = function(callback) {
-      // create test data before
+    var getPassengerIdForUser = function(callback) {
       chai.request(server)
-      .post('/api/passengers')
+      .get('/api/passengers/forUser')
+      .set(authHeader)
+      .set(registrationHeader)
+      .end(function (err, res) {
+        res.should.have.status(200);
+        testPassengerId = res.body._id;
+        assert.ok('Got the test passenger.');
+        callback(null);
+      });
+    };
+
+    var putTestPassengerProfile = function(callback) {
+      chai.request(server)
+      .put('/api/passengers/'+testPassengerId)
       .set(authHeader)
       .set(registrationHeader)
       .send(testPassenger)
       .end(function (err, res) {
         res.should.have.status(200);
-        testPassengerId = res.body._id;
-        assert.ok('Created a test Passenger.')
-        callback();
+        assert.ok('Updated the test passenger profile.')
+        callback(null);
       });
     };
 
-    async.series( [ createTestUser, createAccessToken, createTestPassenger ], function(err) {
+    async.series( [ createTestUser, createAccessToken, getPassengerIdForUser, putTestPassengerProfile ], function(err) {
       if (err)
         assert.fail('Failed to create Test fixtures for Passengers test suite.');
       done();

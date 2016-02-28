@@ -68,9 +68,12 @@ router.route('/drivers/:driver_id')
   .put(authController.isAuthenticated, driverController.putDriver)
   .delete(authController.isAuthenticated, driverController.deleteDriver);
 
+//.post(authController.isAuthenticated, passengerController.postPassengers)
 router.route('/passengers')
-  .post(authController.isAuthenticated, passengerController.postPassengers)
   .get(authController.isAuthenticated, passengerController.getPassengers);
+
+router.route('/passengers/forUser')
+    .get(authController.isAuthenticated, passengerController.getPassengerForUser);
 
 // 1. get one
 router.route('/passengers/:passenger_id')
