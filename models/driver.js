@@ -15,6 +15,12 @@ var DriverSchema = new mongoose.Schema({
     type: String,
     maxLength: 100
   },
+  status: {
+    type: String,
+    required: false,
+    default: 'inactive',
+    enum: ['blocked', 'inactive', 'notverified', 'active', 'deleted', 'deactivated']
+  },
   gender: {
     type: String,
     enum: ['Male', 'Female', 'Unspecified']

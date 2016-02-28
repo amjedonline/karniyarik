@@ -11,6 +11,11 @@ var UserSchema = new mongoose.Schema({
   password:{
     type: String,
     required: true
+  },
+  registered_scopes: {
+    type: [String],
+    default: [],
+    enum: ['passenger', 'driver']
   }
 });
 

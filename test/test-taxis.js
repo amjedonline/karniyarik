@@ -32,6 +32,7 @@ var testTaxi = {
 var testTaxiId = "";
 var authUser = "taxiTestingUser1@alotaksim.tr";
 var authPass = "taxiTestingPassword1";
+var authScope = "passenger";
 var registrationId = 'taxiTestingUserRegistration1';
 var authHeader = '';
 var registrationHeader = '';
@@ -44,7 +45,7 @@ describe('Taxis', function() {
     var createTestUser = function(callback) {
       chai.request(server)
         .post('/api/users')
-        .send({email: authUser, password: authPass})
+        .send({email: authUser, password: authPass, scope: authScope})
         .end(function(err, res) {
             res.should.have.status(200);
             res.body.should.be.a('object')
@@ -56,7 +57,7 @@ describe('Taxis', function() {
     var createAccessToken = function (callback) {
       chai.request(server)
       .post('/api/authentication/jwt_token')
-      .send({email: authUser, password: authPass, registration_id: registrationId})
+      .send({email: authUser, password: authPass, registration_id: registrationId, scope: authScope})
       .end(function(err, res) {
           res.should.have.status(200);
           authHeader = { 'Authorization': 'Bearer '+ res.body.token };

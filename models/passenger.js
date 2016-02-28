@@ -19,6 +19,12 @@ var PassengerSchema = new mongoose.Schema({
     type: String,
     enum: ['Male', 'Female', 'Unspecified']
   },
+  status: {
+    type: String,
+    required: true,
+    default: 'inactive',
+    enum: ['blocked', 'inactive', 'notverified', 'active', 'deactivated']
+  },
   dob: {
     type: Date
   },

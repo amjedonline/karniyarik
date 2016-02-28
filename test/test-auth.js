@@ -10,15 +10,16 @@ var util = require('util');
 
 var testUser = 'testuser@gmx.de';
 var testPassword = 'amjed123';
+var testScope = 'passenger';
 var testRegistrationId = 'id123id';
 
 chai.use(chaiHttp);
 
-describe('Basic Authentication for token generation.', function() {
+describe('User authentication for with basic/jwt token.', function() {
     before(function (done){
       chai.request(server)
       .post('/api/users')
-      .send({email: testUser, password: testPassword})
+      .send({email: testUser, password: testPassword, scope: testScope})
       .end(function(err, res) {
           res.should.have.status(200);
           res.body.should.be.a('object')
@@ -29,7 +30,7 @@ describe('Basic Authentication for token generation.', function() {
     it('should create a valid JWT token and send response.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email:testUser, password:testPassword, registration_id:testRegistrationId})
+        .send({email:testUser, password:testPassword, registration_id:testRegistrationId, scope: testScope})
         .end(function(err, res) {
             res.should.have.status(200);
             res.should.be.json;
@@ -38,7 +39,7 @@ describe('Basic Authentication for token generation.', function() {
             var tokenResponse = res.body;
 
             var containsAllKeys = _.every(
-                ['token', 'token_type', 'valid_till'],
+                ['token', 'token_type', 'valid_till', 'scope'],
                 function(key){
                   return _.contains(this, key)
                 },
@@ -70,10 +71,48 @@ describe('Basic Authentication for token generation.', function() {
         });
     });
 
+
+    it('should return 400 on an attempt to create JWT token without scope.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({email:testUser, password: testPassword, registration_id:testRegistrationId})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
     it('should return 400 on an attempt to create JWT token with false email.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email:'nonexistentuser@nowhere.ca', password:testPassword, registration_id:'somerandomnumber8972134'})
+        .send({email:'nonexistentuser@nowhere.ca', password:testPassword, registration_id:'somerandomnumber8972134', scope: testScope})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+    it('should return 400 on an attempt to create JWT token with non-existent scope.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({email:testUser, password:testPassword, registration_id:'somerandomnumber8972134', scope: 'superman'})
+        .end(function(err, res) {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            done();
+        });
+    });
+
+
+    it('should return 400 on an attempt to create JWT token with not-registered-for scope.', function (done) {
+        chai.request(server)
+        .post('/api/authentication/jwt_token')
+        .send({email:testUser, password:testPassword, registration_id:'somerandomnumber8972134', scope: 'driver'})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -85,7 +124,7 @@ describe('Basic Authentication for token generation.', function() {
     it('should return 400 on an attempt to create JWT token with false email and false password.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email:'somenotexistinguser@whereami.au', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .send({email:'somenotexistinguser@whereami.au', password:'falsepassword', registration_id:'somerandomnumber8972134', scope: testScope})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -97,7 +136,7 @@ describe('Basic Authentication for token generation.', function() {
     it('should return 400 on an unauthorized JWT token creation attempt.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email:'amjed@work.eu', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .send({email:'amjed@work.eu', password:'falsepassword', registration_id:'somerandomnumber8972134', scope: testScope})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -106,10 +145,10 @@ describe('Basic Authentication for token generation.', function() {
         });
     });
 
-    it('should return 400 on an attempt to create JWT token without a registraion id.', function (done) {
+    it('should return 400 on an attempt to create JWT token without a registration id.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email:'somenotexistinguser@bahnhof.de', password:'falsepassword', registration_id:'somerandomnumber8972134'})
+        .send({email:testUser, password:testPassword, scope: testScope})
         .end(function(err, res) {
             res.should.have.status(400);
             res.should.be.json;
@@ -121,7 +160,7 @@ describe('Basic Authentication for token generation.', function() {
     it('should authenticate the request with an earlier issued token.', function (done) {
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email: testUser, password: testPassword, registration_id: testRegistrationId})
+        .send({email: testUser, password: testPassword, registration_id: testRegistrationId, scope: testScope})
         .end(function(err, res) {
             res.should.have.status(200);
             var token = res.body.token;
@@ -146,7 +185,7 @@ describe('Basic Authentication for token generation.', function() {
         var actualRegId = 'my-new-reg-for-new-device';
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email: testUser, password: testPassword, registration_id: actualRegId })
+        .send({email: testUser, password: testPassword, registration_id: actualRegId, scope: testScope })
         .end(function(err, res) {
             res.should.have.status(200);
             var token = res.body.token;
@@ -170,7 +209,7 @@ describe('Basic Authentication for token generation.', function() {
         var localRegId = 'my-new-reg-for-device-2';
         chai.request(server)
         .post('/api/authentication/jwt_token')
-        .send({email: testUser, password: testPassword, registration_id: localRegId })
+        .send({email: testUser, password: testPassword, registration_id: localRegId, scope: testScope })
         .end(function(err, res) {
             res.should.have.status(200);
             var token = res.body.token;
@@ -189,4 +228,6 @@ describe('Basic Authentication for token generation.', function() {
             done();
         });
     });
+
+
 });

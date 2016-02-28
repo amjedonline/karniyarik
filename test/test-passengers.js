@@ -31,6 +31,7 @@ var testPassenger = {
 var testPassengerId = "";
 var authUser = "passengerTestingUser1@alotaksim.tr";
 var authPass = "passengerTestingPassword1";
+var authScope = "passenger";
 var registrationId = 'passengerTestingUserRegistration1';
 var authHeader = '';
 var registrationHeader = '';
@@ -44,7 +45,7 @@ describe('Passengers', function() {
     var createTestUser = function(callback) {
       chai.request(server)
         .post('/api/users')
-        .send({email: authUser, password: authPass})
+        .send({email: authUser, password: authPass, scope: authScope})
         .end(function(err, res) {
             res.should.have.status(200);
             res.body.should.be.a('object')
@@ -56,7 +57,7 @@ describe('Passengers', function() {
     var createAccessToken = function (callback) {
       chai.request(server)
       .post('/api/authentication/jwt_token')
-      .send({email: authUser, password: authPass, registration_id: registrationId})
+      .send({email: authUser, password: authPass, registration_id: registrationId, scope: authScope})
       .end(function(err, res) {
           res.should.have.status(200);
           authHeader = { 'Authorization': 'Bearer '+ res.body.token };
@@ -74,6 +75,7 @@ describe('Passengers', function() {
       .set(registrationHeader)
       .send(testPassenger)
       .end(function (err, res) {
+        res.should.have.status(200);
         testPassengerId = res.body._id;
         assert.ok('Created a test Passenger.')
         callback();

@@ -35,7 +35,7 @@ exports.postPassengers = function(req, res){
   // Save the passenger and check for errors
   passenger.save(function(err){
     if (err){
-      // console.log('Sending error ' + err);
+      console.log('Sending error ' + err);
       res.status(500).send("There was a problem trying to save the passenger object.");
     }
     else{
@@ -60,8 +60,10 @@ exports.getPassengers = function(req, res) {
 
 //get one
 exports.getPassenger = function(req, res) {
+  console.log(util.inspect(req.params));
   Passenger.findOne({ userId: req.user._id, _id: req.params.passenger_id }, function(err, passenger){
     if(err){
+      console.log(util.inspect(err));
       res.status(500).send({message: 'There was a problem accessing the passenger.'});
     } else if (!passenger) {
       res.status(404).send({message:'Either a passenger with this id does not exist, or you dont have access rights to this passenger.'});

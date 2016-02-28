@@ -11,6 +11,7 @@ var registrationHeader = '';
 
 var authUser = 'userForUsersSuite@yahoo.com';
 var authPass = 'userForUsersSuitePassword';
+var authScope = 'passenger';
 var registrationId = 'regid-for-userForUsersSuite';
 
 chai.use(chaiHttp);
@@ -22,7 +23,7 @@ describe('Users', function() {
     var createTestUser = function(callback) {
       chai.request(server)
         .post('/api/users')
-        .send({email: authUser, password: authPass})
+        .send({email: authUser, password: authPass, scope: authScope})
         .end(function(err, res) {
             res.should.have.status(200);
             res.body.should.be.a('object')
@@ -34,7 +35,7 @@ describe('Users', function() {
     var createAccessToken = function (callback) {
       chai.request(server)
       .post('/api/authentication/jwt_token')
-      .send({email: authUser, password: authPass, registration_id: registrationId})
+      .send({email: authUser, password: authPass, scope: authScope, registration_id: registrationId})
       .end(function(err, res) {
           res.should.have.status(200);
           authHeader = {'Authorization': 'Bearer '+ res.body.token};
@@ -71,7 +72,7 @@ describe('Users', function() {
     .post('/api/users')
     .set(authHeader)
     .set(registrationHeader)
-    .send({email: 'superman@heroes.us', password: 'superSecret123'})
+    .send({email: 'superman@heroes.us', password: 'superSecret123', scope: authScope})
     .end(function(err, res) {
         res.should.have.status(200);
         res.body.should.be.a('object')
@@ -84,7 +85,7 @@ describe('Users', function() {
     .post('/api/users')
     .set(authHeader)
     .set(registrationHeader)
-    .send({email: 'superman', password: 'superSecret123'})
+    .send({email: 'superman', password: 'superSecret123', scope: authScope})
     .end(function(err, res) {
         res.should.have.status(400);
         res.body.should.be.a('object')
@@ -99,7 +100,7 @@ describe('Users', function() {
         .post('/api/users')
         .set(authHeader)
         .set(registrationHeader)
-        .send({email: 'bob@foo.com', password: 'superSecret123'})
+        .send({email: 'bob@foo.com', password: 'superSecret123', scope: authScope})
         .end(function(err, res) {
             if(err){
               cb(err);
@@ -116,7 +117,7 @@ describe('Users', function() {
         .post('/api/users')
         .set(authHeader)
         .set(registrationHeader)
-        .send({email: 'bob@foo.com', password: 'bobbylovescoffee'})
+        .send({email: 'bob@foo.com', password: 'bobbylovescoffee', scope: authScope})
         .end(function(err, res) {
             res.should.have.status(400);
             res.body.should.be.a('object')
@@ -135,6 +136,20 @@ describe('Users', function() {
       done();
     });
 
+  });
+
+
+  it('should return 400 on an attempt to create a user with an invalid scope /users/ POST', function (done){
+    chai.request(server)
+    .post('/api/users')
+    .set(authHeader)
+    .set(registrationHeader)
+    .send({email: 'superman@heroes.de', password: 'superSecret123', scope: 'spiderman'})
+    .end(function(err, res) {
+        res.should.have.status(400);
+        res.body.should.be.a('object')
+        done();
+    });
   });
 
   it('should update a SINGLE user on /user/<id> PUT');
