@@ -16,7 +16,6 @@ chai.use(chaiHttp);
 var testDriver = {
   fname: "Max",
   lname: "Rosemann",
-  email: "max.rosemann@gmail.com",
   gender: "Male",
   dob: "1986-02-06T00:00:00.000Z",
   mobile: "1234567890",
@@ -124,7 +123,6 @@ describe('Drivers', function() {
       var newValue = {
         fname: "Mathias",
         lname: "Klatsch",
-        email: "mathias.klatsch@gmail.com",
         gender: "Male",
         dob: "1987-06-07T00:00:00.000Z",
         mobile: "23142",

@@ -11,7 +11,6 @@ exports.postPassengers = function(req, res){
   //set the passenger properties that come from the POST data
   passenger.lname = req.body.lname
   passenger.fname = req.body.fname;
-  passenger.email = req.body.email;
   passenger.gender = req.body.gender;
   if ( !_.isEmpty(req.body.dob)){
     // in utc format
@@ -74,7 +73,7 @@ exports.getPassenger = function(req, res) {
 };
 
 exports.putPassenger = function(req, res) {
-  var allowedFields = ["fname", "lname", "email", "gender", "dob", "mobile", "licensenumber",
+  var allowedFields = ["fname", "lname", "gender", "dob", "mobile", "licensenumber",
         "licenseexpirydate", "insurancenumber", "insuranceexpirydate", "country", "state", "city",
          "addressline1", "addressline2", "postal"];
   var fieldsToUpdate = _.intersection(Object.keys(req.body), allowedFields);

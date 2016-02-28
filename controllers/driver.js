@@ -11,7 +11,6 @@ exports.postDrivers = function(req, res){
   //set the driver properties that come from the POST data
   driver.lname = req.body.lname
   driver.fname = req.body.fname;
-  driver.email = req.body.email;
   driver.gender = req.body.gender;
   if ( !_.isEmpty(req.body.dob)){
     // in utc format
@@ -83,7 +82,7 @@ exports.getDriver = function(req, res) {
 };
 
 exports.putDriver = function(req, res) {
-  var allowedFields = ["fname", "lname", "email", "gender", "dob", "mobile", "licensenumber",
+  var allowedFields = ["fname", "lname", "gender", "dob", "mobile", "licensenumber",
         "licenseexpirydate", "insurancenumber", "insuranceexpirydate", "country", "state", "city",
          "addressline1", "addressline2", "postal"];
   var fieldsToUpdate = _.intersection(Object.keys(req.body), allowedFields);

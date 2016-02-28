@@ -16,7 +16,6 @@ chai.use(chaiHttp);
 var testPassenger = {
   fname: "Alice",
   lname: "Cayenne",
-  email: "alice.cayenne@gmail.com",
   gender: "Female",
   dob: "1991-02-06T00:00:00.000Z",
   mobile: "1234567890",
@@ -145,7 +144,6 @@ describe('Passengers', function() {
       var newValue = {
         fname: "Til",
         lname: "Schweiger",
-        email: "til.schweiger@gmx.de",
         gender: "Male",
         dob: "1967-10-11T00:00:00.000Z",
         mobile: "982374908",
@@ -179,8 +177,7 @@ describe('Passengers', function() {
     it('should return 401 an unauthorized attempt to PUT/Updated a passenger on /api/passengers/<id> PUT', function (done){
       var newValue = {
         fname: "Dr",
-        lname: "Evil",
-        email: "black.hat@anonymous.de",
+        lname: "Evil"
       }
       chai.request(server)
       .put('/api/passengers/' + testPassengerId)
@@ -195,8 +192,7 @@ describe('Passengers', function() {
     it('should return 404 an attempt to PUT/Updated a NON-EXISTING passenger on /api/passengers/<id> PUT', function (done){
       var newValue = {
         fname: "Dr",
-        lname: "Evil",
-        email: "black.hat@anonymous.de",
+        lname: "Evil"
       }
       chai.request(server)
       .put('/api/passengers/' + '35acbadd0ce9321d51ba7e9c')
