@@ -35,7 +35,7 @@ var testDriverId = "";
 var authUser = "driverTestingUser@google.de";
 var authPass = "driverTestingUserPassword";
 var registrationId = 'driverTestingUserRegistration1';
-var authScope = 'passenger';
+var authScope = 'driver';
 var authHeader = '';
 var registrationHeader = '';
 
@@ -68,22 +68,33 @@ describe('Drivers', function() {
         });
       };
 
-      // TODO: This should also register a new user ?
-      var createTestDriver = function(callback) {
-        // create test data before
+      var getDriverIdForUser = function(callback) {
         chai.request(server)
-        .post('/api/drivers')
+        .get('/api/drivers/forUser')
         .set(authHeader)
         .set(registrationHeader)
-        .send(testDriver)
         .end(function (err, res) {
+          res.should.have.status(200);
           testDriverId = res.body._id;
-          assert.ok('Created a test driver.')
+          assert.isString(testDriverId, 'Got test driver id.');
           callback();
         });
       };
 
-      async.series( [ createTestUser, createAccessToken, createTestDriver ], function(err) {
+      var putTestDriverProfile = function(callback) {
+        chai.request(server)
+        .put('/api/drivers/'+testDriverId)
+        .set(authHeader)
+        .set(registrationHeader)
+        .send(testDriver)
+        .end(function (err, res) {
+          res.should.have.status(200);
+          assert.ok('Updated the test driver profile.')
+          callback();
+        });
+      };
+
+      async.series([createTestUser, createAccessToken, getDriverIdForUser, putTestDriverProfile], function(err) {
         if (err)
           assert.fail('Failed to create Test fixtures for Drivers test suite.');
         done();

@@ -18,7 +18,7 @@ var authController = require('./controllers/auth');
 var app = express();
 
 var env  = app.get('env');
-console.log(' !!!! Karniyarik server running in profile <' + env + '> !!!!!');
+console.log('Karniyarik server starting in profile --------- <' + env + '> ---------');
 var config = require('./config').config[env];
 
 function getDbConnectionString(config) {
@@ -26,6 +26,12 @@ function getDbConnectionString(config) {
 }
 
 mongoose.connect(getDbConnectionString(config));
+mongoose.connection.on('error', function(err){
+  console.log('Mongo connection error!');
+  console.log(err);
+  process.exit(1);
+});
+
 // mongoose.set('debug', true);
 
 if(config.db.name==='development'){
@@ -59,8 +65,10 @@ router.route('/authentication/jwt_token')
   .post(jwtController.createJwtToken);
 
 router.route('/drivers')
-  .post(authController.isAuthenticated, driverController.postDrivers)
   .get(authController.isAuthenticated, driverController.getDrivers);
+
+router.route('/drivers/forUser')
+  .get(authController.isAuthenticated, driverController.getDriverForUser);
 
 // 1. get one
 router.route('/drivers/:driver_id')

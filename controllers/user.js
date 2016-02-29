@@ -1,6 +1,7 @@
 // Load required packages
 var User = require('../models/user');
 var Passenger = require('../models/passenger');
+var Driver = require('../models/driver');
 var validator = require('validator');
 var _ = require('underscore');
 var util = require('util');
@@ -26,7 +27,7 @@ var initDriver = function(userId, callback){
   driver.status = 'inactive';
   driver.userId = userId;
   // Save the passenger and check for errors
-  driver.save(function(callback){
+  driver.save(function(err){
     if (err){
       callback({ERROR_CODE:ERR_DRIVER_PROFILE_INIT, message: 'Cannot initialize driver profile object.'});
     }
